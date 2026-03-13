@@ -4,16 +4,18 @@
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
+#include "Util/Renderer.hpp"
 
 void App::Start() {
     LOG_TRACE("Start");
+    m_Player = std::make_shared<Player>();
     m_CurrentState = State::UPDATE;
 }
 
 void App::Update() {
-    
-    //TODO: do your things here and delete this line <3
-    
+    m_Player->Update();
+    m_Player->Draw();
+
     /*
      * Do not touch the code below as they serve the purpose for
      * closing the window.
