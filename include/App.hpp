@@ -3,6 +3,7 @@
 
 #include "pch.hpp" // IWYU pragma: export
 #include "Player.hpp"
+#include "Spike.hpp"
 
 class App {
 public:
@@ -26,6 +27,7 @@ private:
 private:
     State m_CurrentState = State::START;
     std::shared_ptr<Player> m_Player;
+    std::shared_ptr<Spike> m_Spike;
 };
 
 #endif

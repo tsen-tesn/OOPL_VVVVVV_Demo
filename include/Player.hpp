@@ -14,6 +14,9 @@ public:
     Player();
     void Update();
 
+    // 取得即時位置，用於碰撞判定
+    glm::vec2 GetPosition() const;
+
 private:
     std::shared_ptr<Util::Animation> m_RightDownAnimation;
     std::shared_ptr<Util::Animation> m_LeftDownAnimation;
