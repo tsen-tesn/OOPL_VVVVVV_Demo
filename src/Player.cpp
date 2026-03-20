@@ -8,7 +8,7 @@ namespace {
     std::shared_ptr<Util::Animation> CreateAnimation(int start, int end) {
         std::vector<std::string> frames;
         for (int i = start; i <= end; ++i) {
-            frames.push_back("Resources/character/main/role_" + std::to_string(i) + ".png");
+            frames.push_back("Resources/Character/Main/role_" + std::to_string(i) + ".png");
         }
         return std::make_shared<Util::Animation>(frames, true, 100, true);
     }
