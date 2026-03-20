@@ -26,6 +26,10 @@ private:
     std::shared_ptr<Util::Animation> m_LeftDownAnimation;
     std::shared_ptr<Util::Animation> m_RightUpAnimation;
     std::shared_ptr<Util::Animation> m_LeftUpAnimation;
+    std::shared_ptr<Util::Image> m_RightDownImage;
+    std::shared_ptr<Util::Image> m_LeftDownImage;
+    std::shared_ptr<Util::Image> m_RightUpImage;
+    std::shared_ptr<Util::Image> m_LeftUpImage;
     std::shared_ptr<Util::Image> m_RightDownDeathImage;
     std::shared_ptr<Util::Image> m_LeftDownDeathImage;
     std::shared_ptr<Util::Image> m_RightUpDeathImage;

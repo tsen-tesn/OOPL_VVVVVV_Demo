@@ -26,6 +26,10 @@ Player::Player() {
     m_RightDownAnimation   = CreateAnimation(6, 8); 
     m_LeftDownAnimation    = CreateAnimation(9, 11);
 
+    m_RightDownImage = std::make_shared<Util::Image>("Resources/Character/Main/role_6.png");
+    m_LeftDownImage = std::make_shared<Util::Image>("Resources/Character/Main/role_9.png");
+    m_RightUpImage = std::make_shared<Util::Image>("Resources/Character/Main/role_0.png");
+    m_LeftUpImage = std::make_shared<Util::Image>("Resources/Character/Main/role_3.png");
     m_RightDownDeathImage = std::make_shared<Util::Image>("Resources/Character/Main/role_16.png");
     m_LeftDownDeathImage = std::make_shared<Util::Image>("Resources/Character/Main/role_19.png");
     m_RightUpDeathImage = std::make_shared<Util::Image>("Resources/Character/Main/role_22.png");
@@ -121,17 +125,35 @@ void Player::Update() {
 
     m_Transform.translation += m_Velocity * deltaTime;
 
+    bool isMoving = (m_Velocity.x != 0.0f);
+
     if (m_FacingRight && m_GravityDown) {
-        m_Drawable = m_RightDownAnimation;
+        if (isMoving) {
+            m_Drawable = m_RightDownAnimation;
+        } else {
+            m_Drawable = m_RightDownImage;
+        }
     }
     else if (!m_FacingRight && m_GravityDown) {
-        m_Drawable = m_LeftDownAnimation;
+        if (isMoving) {
+            m_Drawable = m_LeftDownAnimation;
+        } else {
+            m_Drawable = m_LeftDownImage;
+        }
     }
     else if (m_FacingRight && !m_GravityDown) {
-        m_Drawable = m_RightUpAnimation;
+        if (isMoving) {
+            m_Drawable = m_RightUpAnimation;
+        } else {
+            m_Drawable = m_RightUpImage;
+        }
     }
     else {
-        m_Drawable = m_LeftUpAnimation;
+        if (isMoving) {
+            m_Drawable = m_LeftUpAnimation;
+        } else {
+            m_Drawable = m_LeftUpImage;
+        }
     }
 
     m_Transform.scale = {2.0f, 2.0f};
