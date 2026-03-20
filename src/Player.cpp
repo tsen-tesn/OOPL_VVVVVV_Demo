@@ -104,6 +104,10 @@ void Player::Update() {
     }
 }
 
+glm::vec2 Player::GetPosition() const {
+    return m_Transform.translation;
+}
+
 bool Player::is_grounded() {
     const float topBound = -300.0f;
     const float bottomBound = 300.0f;

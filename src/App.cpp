@@ -9,12 +9,19 @@
 void App::Start() {
     LOG_TRACE("Start");
     m_Player = std::make_shared<Player>();
+    // m_Spike = std::make_shared<Spike>();
+    // m_Spike->m_Transform.translation = {100.0f, -300.0f}; // tile_6.png 位置範例
     m_CurrentState = State::UPDATE;
 }
 
 void App::Update() {
     m_Player->Update();
     m_Player->Draw();
+    m_Spike->Draw();
+
+    // if (m_Spike && m_Player && m_Spike->is_touched(m_Player->GetPosition())) {
+    //     LOG_INFO("Player is died");
+    // }
 
     /*
      * Do not touch the code below as they serve the purpose for
