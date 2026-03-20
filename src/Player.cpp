@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include "Util/Logger.hpp"
 
 #include <memory>
 #include <string>
@@ -25,6 +26,11 @@ Player::Player() {
     m_RightDownAnimation   = CreateAnimation(6, 8); 
     m_LeftDownAnimation    = CreateAnimation(9, 11);
 
+    m_RightDownDeathImage = std::make_shared<Util::Image>("Resources/Character/Main/role_16.png");
+    m_LeftDownDeathImage = std::make_shared<Util::Image>("Resources/Character/Main/role_19.png");
+    m_RightUpDeathImage = std::make_shared<Util::Image>("Resources/Character/Main/role_22.png");
+    m_LeftUpDeathImage = std::make_shared<Util::Image>("Resources/Character/Main/role_25.png");
+
     // 預設狀態：面右、往下
     m_Drawable = m_RightDownAnimation;
     m_ZIndex = 1.0f;
@@ -33,6 +39,56 @@ Player::Player() {
 
 void Player::Update() {
     float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
+
+    if (m_IsDead) {
+        m_DeathTimer += deltaTime;
+
+        int blinkPhase = static_cast<int>(m_DeathTimer / m_BlinkInterval);
+
+        if (blinkPhase % 2 == 0) {
+            // 偶數階段：顯示角色
+            if (m_FacingRight && m_GravityDown) {
+                m_Drawable = m_RightUpDeathImage;
+            }
+            else if (!m_FacingRight && m_GravityDown) {
+                m_Drawable = m_LeftUpDeathImage;
+            }
+            else if (m_FacingRight && !m_GravityDown) {
+                m_Drawable = m_RightDownDeathImage;
+            }
+            else {
+                m_Drawable = m_LeftDownDeathImage;
+            }
+        }
+        else {
+            // 奇數階段：隱藏角色
+            m_Drawable = nullptr;
+        }
+
+        if (m_DeathTimer >= m_DeathDuration) {
+            m_Transform.translation = {0.0f, 0.0f};
+            m_Velocity = {0.0f, 0.0f};
+            m_IsDead = false;
+            m_DeathTimer = 0.0f;
+
+            // 重生後恢復正常圖片
+            if (m_FacingRight && m_GravityDown) {
+                m_Drawable = m_RightDownAnimation;
+            }
+            else if (!m_FacingRight && m_GravityDown) {
+                m_Drawable = m_LeftDownAnimation;
+            }
+            else if (m_FacingRight && !m_GravityDown) {
+                m_Drawable = m_RightUpAnimation;
+            }
+            else {
+                m_Drawable = m_LeftUpAnimation;
+            }
+        }
+
+        return;
+    }
+
     float moveSpeed = 200.0f;
 
     // 左右移動：長按持續移動
@@ -49,7 +105,7 @@ void Player::Update() {
     }
 
 
-    if (is_grounded()) {
+    if (IsGrounded()) {
         if (Util::Input::IsKeyDown(Util::Keycode::DOWN)) {
             m_GravityDown = false;
         } else if (Util::Input::IsKeyDown(Util::Keycode::UP)) {
@@ -108,7 +164,22 @@ glm::vec2 Player::GetPosition() const {
     return m_Transform.translation;
 }
 
-bool Player::is_grounded() {
+void Player::Die() {
+    if (m_IsDead) {
+        return;
+    }
+
+    LOG_INFO("Player died");
+    m_IsDead = true;
+    m_DeathTimer = 0.0f;
+    m_Velocity = {0.0f, 0.0f};
+}
+
+bool Player::IsDead() const {
+    return m_IsDead;
+}
+
+bool Player::IsGrounded() {
     const float topBound = -300.0f;
     const float bottomBound = 300.0f;
     const float epsilon = 1.0f; // 一點誤差

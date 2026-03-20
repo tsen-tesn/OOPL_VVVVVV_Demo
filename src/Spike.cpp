@@ -9,10 +9,23 @@ Spike::Spike() {
 }
 
 bool Spike::is_touched(const glm::vec2 &playerPos) const {
-    const glm::vec2 spikePos = m_Transform.translation;
-    const float thresholdX = 30.0f;
-    const float thresholdY = 30.0f;
+    glm::vec2 spikePos = m_Transform.translation;
 
-    return std::abs(playerPos.x - spikePos.x) <= thresholdX &&
-           std::abs(playerPos.y - spikePos.y) <= thresholdY;
+    float playerHalfSize = 16.0f;  // 玩家半寬（自己調）
+    float spikeHalfSize  = 4.0f;  // Spike 半寬（自己調）
+
+    float playerLeft   = playerPos.x - playerHalfSize;
+    float playerRight  = playerPos.x + playerHalfSize;
+    float playerTop    = playerPos.y - playerHalfSize;
+    float playerBottom = playerPos.y + playerHalfSize;
+
+    float spikeLeft   = spikePos.x - spikeHalfSize;
+    float spikeRight  = spikePos.x + spikeHalfSize;
+    float spikeTop    = spikePos.y - spikeHalfSize;
+    float spikeBottom = spikePos.y + spikeHalfSize;
+
+    return (playerRight  > spikeLeft &&
+            playerLeft   < spikeRight &&
+            playerBottom > spikeTop &&
+            playerTop    < spikeBottom);
 }
