@@ -15,11 +15,11 @@ namespace {
 }
 
 Player::Player() {
-    // 假設分組如下：
     // 0~3   : right + up
     // 4~7   : left  + up
     // 8~11  : right + down
     // 12~15 : left  + down
+
     m_RightUpAnimation = CreateAnimation(0, 2);
     m_LeftUpAnimation  = CreateAnimation(3, 5);
     m_RightDownAnimation   = CreateAnimation(6, 8); 
@@ -48,25 +48,23 @@ void Player::Update() {
         m_FacingRight = true;
     }
 
-    // 上下方向切換：只在按下當下切換，並清掉原本垂直速度
-    // 這裡沿用你前面實測過比較正確的對應
-    if (Util::Input::IsKeyDown(Util::Keycode::UP)) {
-        m_GravityDown = true;
-        m_Velocity.y = 0.0f;
-    }
-    else if (Util::Input::IsKeyDown(Util::Keycode::DOWN)) {
-        m_GravityDown = false;
-        m_Velocity.y = 0.0f;
+
+    if (is_grounded()) {
+        if (Util::Input::IsKeyDown(Util::Keycode::DOWN)) {
+            m_GravityDown = false;
+        } else if (Util::Input::IsKeyDown(Util::Keycode::UP)) {
+            m_GravityDown = true;
+        } else if (Util::Input::IsKeyDown(Util::Keycode::SPACE)){
+            m_GravityDown = !m_GravityDown;
+        }
     }
 
-    // 套用重力
+
     float gravityDirection = m_GravityDown ? 1.0f : -1.0f;
-    m_Velocity.y += m_Gravity * gravityDirection * deltaTime;
+    m_Velocity.y = m_Gravity * gravityDirection;
 
-    // 更新位置
     m_Transform.translation += m_Velocity * deltaTime;
 
-    // 根據狀態切換動畫
     if (m_FacingRight && m_GravityDown) {
         m_Drawable = m_RightDownAnimation;
     }
@@ -80,10 +78,8 @@ void Player::Update() {
         m_Drawable = m_LeftUpAnimation;
     }
 
-    // 因為素材本身已經分上下左右，所以這裡不要再用負 scale 去翻
     m_Transform.scale = {2.0f, 2.0f};
 
-    // 畫面邊界
     const float leftBound   = -400.0f;
     const float rightBound  =  400.0f;
     const float topBound    = -300.0f;
@@ -106,4 +102,13 @@ void Player::Update() {
         m_Transform.translation.y = bottomBound;
         m_Velocity.y = 0.0f;
     }
+}
+
+bool Player::is_grounded() {
+    const float topBound = -300.0f;
+    const float bottomBound = 300.0f;
+    const float epsilon = 1.0f; // 一點誤差
+
+    return (m_Transform.translation.y >= bottomBound - epsilon ||
+            m_Transform.translation.y <= topBound + epsilon);
 }
