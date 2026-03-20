@@ -24,6 +24,7 @@ private:
     float m_Gravity = 500.0f;
     bool m_GravityDown = true;
     bool m_FacingRight = true;
+    bool is_grounded();
 };
 
 #endif
