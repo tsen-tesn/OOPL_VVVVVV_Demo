@@ -25,18 +25,24 @@ void App::Update() {
     
     for (const auto& hazard : m_Level->GetHazards()) {
         hazard->Update();
-
         if (hazard->is_touched(m_Player->GetPosition())) {
             m_Player->Die();
             LOG_INFO("Player died");
         }
     }
-
+    
     // Simple Room Transition Logic
     glm::vec2 pos = m_Player->GetTransform().translation;
     auto conn = m_Level->GetConnections();
     float halfW = 540.0f; // match Player bounds
     float halfH = 330.0f;
+
+    for (const auto& spike : m_Level->GetSpikes()) {
+        if (spike->is_touched(pos)) {
+            m_Player->Die();
+            LOG_INFO("Player died");
+        }
+    }
 
     // Right Edge
     if (pos.x >= halfW) {
