@@ -158,10 +158,11 @@ void Player::Update() {
 
     m_Transform.scale = {2.0f, 2.0f};
 
-    const float leftBound   = -400.0f;
-    const float rightBound  =  400.0f;
-    const float topBound    = -300.0f;
-    const float bottomBound =  300.0f;
+    // 畫面邊界 (對齊地圖 1080x720)
+    const float leftBound   = -540.0f;
+    const float rightBound  =  540.0f;
+    const float topBound    = -330.0f;
+    const float bottomBound =  330.0f;
 
     if (m_Transform.translation.x < leftBound) {
         m_Transform.translation.x = leftBound;
