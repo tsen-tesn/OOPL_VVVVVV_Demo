@@ -7,6 +7,7 @@
 #include "Player.hpp"
 #include "Hazard.hpp"
 #include "Spike.hpp"
+#include "Loadlevel.hpp"
 #include "MovingEnemy.hpp"  
 #include "TileMap.hpp"
 
@@ -33,7 +34,7 @@ private:
     State m_CurrentState = State::START;
     std::shared_ptr<Player> m_Player;
     std::vector<std::shared_ptr<Hazard>> m_Hazards;
-    std::shared_ptr<TileMap> m_TileMap;
+    std::shared_ptr<LoadLevel> m_Level;
 };
 
 #endif
