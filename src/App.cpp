@@ -25,6 +25,7 @@ void App::Update() {
     
     for (const auto& hazard : m_Hazards) {
         hazard->Draw();
+        hazard->Update();
 
         if (hazard->is_touched(m_Player->GetPosition())) {
             m_Player->Die();
