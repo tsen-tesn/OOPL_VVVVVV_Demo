@@ -2,7 +2,6 @@
 #define MOVINGENEMY_HPP
 
 #include <string>
-<<<<<<< HEAD
 #include <vector>
 
 #include "Hazard.hpp"
@@ -23,7 +22,6 @@ private:
     glm::vec2 m_EndPos;
     bool m_MovingToEnd = true;
     float m_Speed = 100.0f;
-=======
 
 #include "Hazard.hpp"
 #include "Util/GameObject.hpp"
@@ -36,7 +34,6 @@ public:
     void Update() override;
 
     bool is_touched(const glm::vec2 &playerPos) const override;
->>>>>>> bc26b60 (refactor: add virtual Update method to Hazard for unified behavior handling)
 };
 
 #endif // MOVINGENEMY_HPP
