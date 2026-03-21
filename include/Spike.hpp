@@ -6,7 +6,7 @@
 #include "Hazard.hpp"
 #include "Util/GameObject.hpp"
 
-class Spike : public Hazard, public Util::GameObject {
+class Spike : public Hazard {
 public:
     Spike(const glm::vec2& position, const std::string& imagePath);     // Spike constructor 接收位置和圖片路徑 
     ~Spike() override = default;

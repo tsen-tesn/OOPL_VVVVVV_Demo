@@ -3,7 +3,9 @@
 
 #include <glm/vec2.hpp>
 
-class Hazard {
+#include "Util/GameObject.hpp"
+
+class Hazard : public Util::GameObject {
 public:
     virtual ~Hazard() = default;
 
