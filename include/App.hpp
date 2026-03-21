@@ -8,6 +8,8 @@
 #include "Hazard.hpp"
 #include "Spike.hpp"
 #include "Loadlevel.hpp"
+#include "MovingEnemy.hpp"  
+#include "TileMap.hpp"
 
 class App {
 public:
