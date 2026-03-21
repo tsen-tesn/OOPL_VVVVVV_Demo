@@ -16,8 +16,7 @@ void App::Start() {
     m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{132.0f, -300.0f}, "Resources/tile_6.png"));
     m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{148.0f, -300.0f}, "Resources/tile_6.png"));
     m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{164.0f, -300.0f}, "Resources/tile_6.png"));
-
-    m_Level = std::make_shared<LoadLevel>(
+    
     std::vector<std::string> enemyFrames = {
         "Resources/Character/Enemy/enemy_4.png",
         "Resources/Character/Enemy/enemy_5.png",

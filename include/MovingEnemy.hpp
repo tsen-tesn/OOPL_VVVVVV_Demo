@@ -22,18 +22,6 @@ private:
     glm::vec2 m_EndPos;
     bool m_MovingToEnd = true;
     float m_Speed = 100.0f;
-
-#include "Hazard.hpp"
-#include "Util/GameObject.hpp"
-
-class MovingEnemy : public Hazard {
-public:
-    MovingEnemy(const glm::vec2& position, const std::string& imagePath);     // MovingEnemy constructor 接收位置和圖片路徑 
-    ~MovingEnemy() override = default;
-
-    void Update() override;
-
-    bool is_touched(const glm::vec2 &playerPos) const override;
 };
 
 #endif // MOVINGENEMY_HPP

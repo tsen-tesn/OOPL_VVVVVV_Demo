@@ -10,7 +10,6 @@
 #include "Loadlevel.hpp"
 #include "MovingEnemy.hpp"  
 #include "TileMap.hpp"
-#include "Loadlevel.hpp"
 
 class App {
 public:
