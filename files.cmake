@@ -3,7 +3,6 @@ set(SRC_FILES
     Player.cpp
     Spike.cpp
     TileMap.cpp
-    Loadlevel.cpp
     MovingEnemy.cpp
     Loadlevel.cpp
 )
@@ -13,7 +12,6 @@ set(INCLUDE_FILES
     Player.hpp
     Spike.hpp
     TileMap.hpp
-    Loadlevel.hpp
     MovingEnemy.hpp
     Loadlevel.hpp
 )
