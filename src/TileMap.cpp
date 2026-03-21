@@ -11,7 +11,7 @@ TileMap::TileType TileMap::GetTileType(int col, int row) const {
     return static_cast<TileType>(m_Grid[static_cast<size_t>(row * m_GridWidth + col)]);
 }
 
-glm::vec2 TileMap::GridToScreen(int col, int row) const {
+glm::vec2 TileMap::GridToScreen(float col, float row) const {
     float scaleX = 3.0f;
     float scaleY = 3.0f;
 
