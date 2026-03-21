@@ -17,14 +17,14 @@ void App::Start() {
     m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{148.0f, -300.0f}, "Resources/tile_6.png"));
     m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{164.0f, -300.0f}, "Resources/tile_6.png"));
 
-    m_TileMap = std::make_shared<TileMap>(
+    m_Level = std::make_shared<LoadLevel>(
         RESOURCE_DIR "/Map/VVVVVV Demo/room1.json"
     );
     m_CurrentState = State::UPDATE;
 }
 
 void App::Update() {
-    m_TileMap->Draw();    // background first
+    m_Level->Draw();    // background first
     m_Player->Update();
     m_Player->Draw();
     
@@ -39,7 +39,7 @@ void App::Update() {
 
     // Simple Room Transition Logic
     glm::vec2 pos = m_Player->GetTransform().translation;
-    auto conn = m_TileMap->GetConnections();
+    auto conn = m_Level->GetConnections();
     float halfW = 540.0f; // match Player bounds
     float halfH = 330.0f;
 
@@ -47,7 +47,7 @@ void App::Update() {
     if (pos.x >= halfW) {
         if (conn.right != -1) {
             try {
-                m_TileMap = std::make_shared<TileMap>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.right) + ".json");
+                m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.right) + ".json");
                 pos.x = -halfW + 10.0f; // wrap to left side
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load right connection: {}", e.what());
@@ -61,7 +61,7 @@ void App::Update() {
     else if (pos.x <= -halfW) {
         if (conn.left != -1) {
             try {
-                m_TileMap = std::make_shared<TileMap>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.left) + ".json");
+                m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.left) + ".json");
                 pos.x = halfW - 10.0f; // wrap to right side
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load left connection: {}", e.what());
@@ -75,7 +75,7 @@ void App::Update() {
     else if (pos.y >= halfH) {
         if (conn.up != -1) {
             try {
-                m_TileMap = std::make_shared<TileMap>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.up) + ".json");
+                m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.up) + ".json");
                 pos.y = -halfH + 10.0f; // wrap to bottom
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load up connection: {}", e.what());
@@ -89,7 +89,7 @@ void App::Update() {
     else if (pos.y <= -halfH) {
         if (conn.down != -1) {
             try {
-                m_TileMap = std::make_shared<TileMap>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.down) + ".json");
+                m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.down) + ".json");
                 pos.y = halfH - 10.0f; // wrap to top
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load down connection: {}", e.what());

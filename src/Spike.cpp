@@ -6,7 +6,7 @@
 Spike::Spike(const glm::vec2& position, const std::string& imagePath) {
     m_Transform.translation = position;
     m_Drawable = std::make_shared<Util::Image>(imagePath);
-    m_Transform.scale = {2.0f, 2.0f};
+    m_Transform.scale = {3.0f, 3.0f};
 }
 
 bool Spike::is_touched(const glm::vec2 &playerPos) const {
