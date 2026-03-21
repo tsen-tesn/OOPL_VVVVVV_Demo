@@ -9,22 +9,30 @@
 void App::Start() {
     LOG_TRACE("Start");
     // for testing
-    // m_Player = std::make_shared<Player>();
-    // m_Spike = std::make_shared<Spike>();
-    m_Spike->m_Transform.translation = {100.0f, -300.0f}; // tile_6.png 位置範例
+    m_Player = std::make_shared<Player>();
+    m_Spikes.push_back(std::make_shared<Spike>(glm::vec2{100.0f, -300.0f}, "Resources/tile_6.png"));
+    m_Spikes.push_back(std::make_shared<Spike>(glm::vec2{116.0f, -300.0f}, "Resources/tile_6.png"));
+    m_Spikes.push_back(std::make_shared<Spike>(glm::vec2{132.0f, -300.0f}, "Resources/tile_6.png"));
+    m_Spikes.push_back(std::make_shared<Spike>(glm::vec2{148.0f, -300.0f}, "Resources/tile_6.png"));
+    m_Spikes.push_back(std::make_shared<Spike>(glm::vec2{164.0f, -300.0f}, "Resources/tile_6.png"));
+
     m_CurrentState = State::UPDATE;
 }
 
 void App::Update() {
     m_Player->Update();
     m_Player->Draw();
-    m_Spike->Draw();
+    
+    for (const auto& spike : m_Spikes) {
+        spike->Draw();
 
-    // for testing
-    // if (m_Spike && m_Player && m_Spike->is_touched(m_Player->GetPosition())) {
-    //     m_Player->Die();
-    //     LOG_INFO("Player is died");
-    // }
+        if (spike->is_touched(m_Player->GetPosition())) {
+            m_Player->Die();
+            LOG_INFO("Player died");
+        }
+    }
+
+
 
     /*
      * Do not touch the code below as they serve the purpose for

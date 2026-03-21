@@ -3,8 +3,9 @@
 #include "Spike.hpp"
 #include "Util/Image.hpp"
 
-Spike::Spike() {
-    m_Drawable = std::make_shared<Util::Image>("Resources/tile_6.png"); 
+Spike::Spike(const glm::vec2& position, const std::string& imagePath) {
+    m_Transform.translation = position;
+    m_Drawable = std::make_shared<Util::Image>(imagePath);
     m_Transform.scale = {2.0f, 2.0f};
 }
 
