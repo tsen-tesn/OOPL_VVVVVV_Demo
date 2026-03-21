@@ -17,6 +17,13 @@ void App::Start() {
     m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{148.0f, -300.0f}, "Resources/tile_6.png"));
     m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{164.0f, -300.0f}, "Resources/tile_6.png"));
 
+    std::vector<std::string> enemyFrames = {
+        "Resources/Character/Enemy/enemy_4.png",
+        "Resources/Character/Enemy/enemy_5.png",
+    };
+
+    m_Hazards.push_back(std::make_shared<MovingEnemy>(glm::vec2{100.0f, 0.0f}, glm::vec2{300.0f, 0.0f}, enemyFrames));
+
     m_TileMap = std::make_shared<TileMap>(
         RESOURCE_DIR "/Map/VVVVVV Demo/room1.json"
     );
@@ -30,6 +37,7 @@ void App::Update() {
     
     for (const auto& hazard : m_Hazards) {
         hazard->Draw();
+        hazard->Update();
 
         if (hazard->is_touched(m_Player->GetPosition())) {
             m_Player->Die();

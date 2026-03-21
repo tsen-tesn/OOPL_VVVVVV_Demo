@@ -7,6 +7,7 @@
 #include "Player.hpp"
 #include "Hazard.hpp"
 #include "Spike.hpp"
+#include "MovingEnemy.hpp"  
 #include "TileMap.hpp"
 
 class App {
