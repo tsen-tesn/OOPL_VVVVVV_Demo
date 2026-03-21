@@ -37,13 +37,6 @@ void App::Update() {
     float halfW = 540.0f; // match Player bounds
     float halfH = 330.0f;
 
-    for (const auto& spike : m_Level->GetSpikes()) {
-        if (spike->is_touched(pos)) {
-            m_Player->Die();
-            LOG_INFO("Player died");
-        }
-    }
-
     // Right Edge
     if (pos.x >= halfW) {
         if (conn.right != -1) {
