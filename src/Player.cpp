@@ -156,7 +156,7 @@ void Player::Update() {
         }
     }
 
-    m_Transform.scale = {2.0f, 2.0f};
+    m_Transform.scale = {3.0f, 3.0f};
 
     // 畫面邊界 (對齊地圖 1080x720)
     const float leftBound   = -540.0f;
