@@ -30,6 +30,15 @@ void App::Update() {
     m_Player->Update();
     m_Player->Draw();
 
+    for (const auto& hazard : m_Hazards) {
+        hazard->Draw();
+        hazard->Update();
+        if (hazard->is_touched(m_Player->GetPosition())) {
+            m_Player->Die();
+            LOG_INFO("Player died");
+        }
+    }
+    
     // Simple Room Transition Logic
     glm::vec2 pos = m_Player->GetTransform().translation;
     auto conn = m_Level->GetConnections();
