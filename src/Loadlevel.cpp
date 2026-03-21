@@ -1,4 +1,5 @@
 #include "Loadlevel.hpp"
+#include "MovingEnemy.hpp"
 #include "Util/Image.hpp"
 #include "Util/Logger.hpp"
 
@@ -75,7 +76,9 @@ LoadLevel::LoadLevel(const std::string& jsonPath) {
     if (j.contains("layers") && j["layers"].is_array()) {
         for (const auto& layer : j["layers"]) {
             std::string name = layer.value("name", "");
-            if (name == "Spikes" || layer.contains("positions")) {
+            
+            // Handle Spikes
+            if (name == "Spikes") {
                 std::string imagePath = layer.value("image_path", "");
                 if (imagePath.empty()) continue;
 
@@ -87,7 +90,40 @@ LoadLevel::LoadLevel(const std::string& jsonPath) {
                         
                         auto spike = std::make_shared<Spike>(screenPos, imagePath);
                         spike->SetZIndex(5.0f);
-                        m_Spikes.push_back(spike);
+                        m_Hazards.push_back(spike);
+                    }
+                }
+            } 
+            // Handle MovingEnemy
+            else if (name == "Moving_enemy") {
+                std::vector<std::string> animPaths;
+                if (layer.contains("image_paths") && layer["image_paths"].is_array()) {
+                    animPaths = layer["image_paths"].get<std::vector<std::string>>();
+                } else if (layer.contains("image_path")) {
+                    animPaths.push_back(layer["image_path"].get<std::string>());
+                }
+                
+                if (animPaths.empty()) continue;
+
+                float scaleValue = layer.value("scale", 2.0f);
+
+                float speedValue = layer.value("speed", 100.0f);
+
+                if (layer.contains("moving_paths") && layer["moving_paths"].is_array()) {
+                    for (const auto& path : layer["moving_paths"]) {
+                        if (!path.contains("start") || !path.contains("end")) continue;
+                        
+                        int startCol = path["start"].value("col", 0);
+                        int startRow = path["start"].value("row", 0);
+                        int endCol = path["end"].value("col", 0);
+                        int endRow = path["end"].value("row", 0);
+
+                        glm::vec2 startPos = m_TileMap->GridToScreen(startCol, startRow);
+                        glm::vec2 endPos = m_TileMap->GridToScreen(endCol, endRow);
+
+                        auto enemy = std::make_shared<MovingEnemy>(startPos, endPos, animPaths, scaleValue, speedValue);
+                        enemy->SetZIndex(10.0f);
+                        m_Hazards.push_back(enemy);
                     }
                 }
             }
@@ -97,7 +133,7 @@ LoadLevel::LoadLevel(const std::string& jsonPath) {
 
 void LoadLevel::Draw() {
     m_Background.Draw();
-    for (auto& spike : m_Spikes) {
-        spike->Draw();
+    for (auto& hazard : m_Hazards) {
+        hazard->Draw();
     }
 }
