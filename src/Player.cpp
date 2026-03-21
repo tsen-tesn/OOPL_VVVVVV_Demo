@@ -38,7 +38,7 @@ Player::Player() {
     // 預設狀態：面右、往下
     m_Drawable = m_RightDownAnimation;
     m_ZIndex = 50.0f;
-    m_Transform.scale = {2.0f, 2.0f};
+    m_Transform.scale = {3.0f, 3.0f};
 }
 
 void Player::Update() {
@@ -70,7 +70,7 @@ void Player::Update() {
         }
 
         if (m_DeathTimer >= m_DeathDuration) {
-            m_Transform.translation = {0.0f, 0.0f};
+            m_Transform.translation = {-200.0f, 0.0f};
             m_Velocity = {0.0f, 0.0f};
             m_IsDead = false;
             m_DeathTimer = 0.0f;
