@@ -11,16 +11,6 @@ void App::Start() {
     LOG_TRACE("Start");
     // for testing
     m_Player  = std::make_shared<Player>();
-    m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{100.0f, -300.0f}, "Resources/tile_6.png"));
-    m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{116.0f, -300.0f}, "Resources/tile_6.png"));
-    m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{132.0f, -300.0f}, "Resources/tile_6.png"));
-    m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{148.0f, -300.0f}, "Resources/tile_6.png"));
-    m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{164.0f, -300.0f}, "Resources/tile_6.png"));
-    
-    std::vector<std::string> enemyFrames = {
-        "Resources/Character/Enemy/enemy_4.png",
-        "Resources/Character/Enemy/enemy_5.png",
-    };
 
     m_Level = std::make_shared<LoadLevel>(
         RESOURCE_DIR "/Map/VVVVVV Demo/room1.json"
@@ -33,8 +23,7 @@ void App::Update() {
     m_Player->Update();
     m_Player->Draw();
     
-    for (const auto& hazard : m_Hazards) {
-        hazard->Draw();
+    for (const auto& hazard : m_Level->GetHazards()) {
         hazard->Update();
 
         if (hazard->is_touched(m_Player->GetPosition())) {
