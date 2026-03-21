@@ -5,6 +5,7 @@ set(SRC_FILES
     TileMap.cpp
     Loadlevel.cpp
     MovingEnemy.cpp
+    Loadlevel.cpp
 )
 
 set(INCLUDE_FILES
@@ -14,6 +15,7 @@ set(INCLUDE_FILES
     TileMap.hpp
     Loadlevel.hpp
     MovingEnemy.hpp
+    Loadlevel.hpp
 )
 
 set(TEST_FILES
