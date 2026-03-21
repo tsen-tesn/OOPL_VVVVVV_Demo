@@ -8,7 +8,8 @@
 class Hazard : public Util::GameObject {
 public:
     virtual ~Hazard() = default;
-
+      
+    virtual void Update() {} 
     virtual bool is_touched(const glm::vec2 &playerPos) const = 0;
 };
 
