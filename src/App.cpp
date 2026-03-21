@@ -5,21 +5,26 @@
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
 #include "Util/Renderer.hpp"
+#include "Util/Time.hpp"
 
 void App::Start() {
     LOG_TRACE("Start");
     // for testing
-    m_Player = std::make_shared<Player>();
+    m_Player  = std::make_shared<Player>();
     m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{100.0f, -300.0f}, "Resources/tile_6.png"));
     m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{116.0f, -300.0f}, "Resources/tile_6.png"));
     m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{132.0f, -300.0f}, "Resources/tile_6.png"));
     m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{148.0f, -300.0f}, "Resources/tile_6.png"));
     m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{164.0f, -300.0f}, "Resources/tile_6.png"));
 
+    m_TileMap = std::make_shared<TileMap>(
+        RESOURCE_DIR "/Map/VVVVVV Demo/room1.json"
+    );
     m_CurrentState = State::UPDATE;
 }
 
 void App::Update() {
+    m_TileMap->Draw();    // background first
     m_Player->Update();
     m_Player->Draw();
     
