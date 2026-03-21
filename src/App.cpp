@@ -22,16 +22,7 @@ void App::Start() {
         "Resources/Character/Enemy/enemy_5.png",
     };
 
-    m_Hazards.push_back(std::make_shared<MovingEnemy>(glm::vec2{100.0f, 0.0f}, glm::vec2{300.0f, 0.0f}, enemyFrames));
-
-    std::vector<std::string> enemyFrames = {
-        "Resources/Character/Enemy/enemy_4.png",
-        "Resources/Character/Enemy/enemy_5.png",
-    };
-
-    m_Hazards.push_back(std::make_shared<MovingEnemy>(glm::vec2{100.0f, 0.0f}, glm::vec2{300.0f, 0.0f}, enemyFrames));
-
-    m_TileMap = std::make_shared<TileMap>(
+    m_Level = std::make_shared<LoadLevel>(
         RESOURCE_DIR "/Map/VVVVVV Demo/room1.json"
     );
     m_CurrentState = State::UPDATE;
