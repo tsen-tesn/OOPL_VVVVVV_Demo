@@ -11,16 +11,13 @@ void App::Start() {
     LOG_TRACE("Start");
     // for testing
     m_Player  = std::make_shared<Player>();
-    m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{100.0f, -300.0f}, "Resources/tile_6.png"));
-    m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{116.0f, -300.0f}, "Resources/tile_6.png"));
-    m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{132.0f, -300.0f}, "Resources/tile_6.png"));
-    m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{148.0f, -300.0f}, "Resources/tile_6.png"));
-    m_Hazards.push_back(std::make_shared<Spike>(glm::vec2{164.0f, -300.0f}, "Resources/tile_6.png"));
+    
     
     std::vector<std::string> enemyFrames = {
         "Resources/Character/Enemy/enemy_4.png",
         "Resources/Character/Enemy/enemy_5.png",
     };
+    m_Hazards.push_back(std::make_shared<MovingEnemy>(glm::vec2(-200.0f, 0.0f), glm::vec2(200.0f, 0.0f), enemyFrames));
 
     m_Level = std::make_shared<LoadLevel>(
         RESOURCE_DIR "/Map/VVVVVV Demo/room1.json"
@@ -32,22 +29,28 @@ void App::Update() {
     m_Level->Draw();    // background first
     m_Player->Update();
     m_Player->Draw();
-    
+
     for (const auto& hazard : m_Hazards) {
         hazard->Draw();
         hazard->Update();
-
         if (hazard->is_touched(m_Player->GetPosition())) {
             m_Player->Die();
             LOG_INFO("Player died");
         }
     }
-
+    
     // Simple Room Transition Logic
     glm::vec2 pos = m_Player->GetTransform().translation;
     auto conn = m_Level->GetConnections();
     float halfW = 540.0f; // match Player bounds
     float halfH = 330.0f;
+
+    for (const auto& spike : m_Level->GetSpikes()) {
+        if (spike->is_touched(pos)) {
+            m_Player->Die();
+            LOG_INFO("Player died");
+        }
+    }
 
     // Right Edge
     if (pos.x >= halfW) {
