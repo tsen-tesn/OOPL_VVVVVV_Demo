@@ -1,6 +1,8 @@
 #ifndef APP_HPP
 #define APP_HPP
 
+#include <vector>
+
 #include "pch.hpp" // IWYU pragma: export
 #include "Player.hpp"
 #include "Spike.hpp"
@@ -27,11 +29,7 @@ private:
 private:
     State m_CurrentState = State::START;
     std::shared_ptr<Player> m_Player;
-    std::shared_ptr<Spike> m_Spike1;
-    std::shared_ptr<Spike> m_Spike2;
-    std::shared_ptr<Spike> m_Spike3;
-    std::shared_ptr<Spike> m_Spike4;
-    std::shared_ptr<Spike> m_Spike5;
+    std::vector<std::shared_ptr<Spike>> m_Spikes;
 };
 
 #endif
