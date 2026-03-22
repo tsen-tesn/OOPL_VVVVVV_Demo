@@ -12,7 +12,7 @@
 class TileMap {
 public:
     enum class TileType {
-        Wall = -1,
+        Wall = 0,
         Path = 1 
     };
 
