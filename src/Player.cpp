@@ -159,8 +159,8 @@ void Player::Update() {
     m_Transform.scale = {3.0f, 3.0f};
 
     // 畫面邊界 (對齊地圖 1080x720)
-    const float leftBound   = -540.0f;
-    const float rightBound  =  540.0f;
+    const float leftBound   = -520.0f;
+    const float rightBound  =  520.0f;
     const float topBound    = -330.0f;
     const float bottomBound =  330.0f;
 

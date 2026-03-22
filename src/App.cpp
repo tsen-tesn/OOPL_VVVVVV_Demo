@@ -34,7 +34,7 @@ void App::Update() {
     // Simple Room Transition Logic
     glm::vec2 pos = m_Player->GetTransform().translation;
     auto conn = m_Level->GetConnections();
-    float halfW = 540.0f; // match Player bounds
+    float halfW = 520.0f; // match Player bounds
     float halfH = 330.0f;
 
     // Right Edge
