@@ -9,12 +9,12 @@
 
 void App::Start() {
     LOG_TRACE("Start");
-    // for testing
-    m_Player  = std::make_shared<Player>();
-
+    
     m_Level = std::make_shared<LoadLevel>(
         RESOURCE_DIR "/Map/VVVVVV Demo/room1.json"
     );
+
+    m_Player = std::make_shared<Player>(m_Level->GetTileMap());
     m_CurrentState = State::UPDATE;
 }
 

@@ -15,27 +15,29 @@ namespace {
     }
 }
 
-Player::Player() {
-    // 0~3   : right + up
-    // 4~7   : left  + up
-    // 8~11  : right + down
-    // 12~15 : left  + down
+Player::Player(std::shared_ptr<TileMap> tileMap)
+    : m_TileMap(tileMap) {
+    // 0~2   : right + up
+    // 3~5   : left  + up
+    // 6~8   : right + down
+    // 9~11  : left  + down
 
     m_RightUpAnimation = CreateAnimation(0, 2);
-    m_LeftUpAnimation  = CreateAnimation(3, 5);
-    m_RightDownAnimation   = CreateAnimation(6, 8); 
-    m_LeftDownAnimation    = CreateAnimation(9, 11);
+    m_LeftUpAnimation = CreateAnimation(3, 5);
+    m_RightDownAnimation = CreateAnimation(6, 8);
+    m_LeftDownAnimation = CreateAnimation(9, 11);
 
     m_RightDownImage = std::make_shared<Util::Image>("Resources/Character/Main/role_6.png");
     m_LeftDownImage = std::make_shared<Util::Image>("Resources/Character/Main/role_9.png");
     m_RightUpImage = std::make_shared<Util::Image>("Resources/Character/Main/role_0.png");
     m_LeftUpImage = std::make_shared<Util::Image>("Resources/Character/Main/role_3.png");
+
     m_RightDownDeathImage = std::make_shared<Util::Image>("Resources/Character/Main/role_16.png");
     m_LeftDownDeathImage = std::make_shared<Util::Image>("Resources/Character/Main/role_19.png");
     m_RightUpDeathImage = std::make_shared<Util::Image>("Resources/Character/Main/role_22.png");
     m_LeftUpDeathImage = std::make_shared<Util::Image>("Resources/Character/Main/role_25.png");
 
-    // 預設狀態：面右、往下
+    // 預設狀態：面右、重力向下
     m_Drawable = m_RightDownAnimation;
     m_ZIndex = 50.0f;
     m_Transform.scale = {3.0f, 3.0f};
@@ -50,22 +52,20 @@ void Player::Update() {
         int blinkPhase = static_cast<int>(m_DeathTimer / m_BlinkInterval);
 
         if (blinkPhase % 2 == 0) {
-            // 偶數階段：顯示角色
             if (m_FacingRight && m_GravityDown) {
-                m_Drawable = m_RightUpDeathImage;
-            }
-            else if (!m_FacingRight && m_GravityDown) {
-                m_Drawable = m_LeftUpDeathImage;
-            }
-            else if (m_FacingRight && !m_GravityDown) {
                 m_Drawable = m_RightDownDeathImage;
             }
-            else {
+            else if (!m_FacingRight && m_GravityDown) {
                 m_Drawable = m_LeftDownDeathImage;
+            }
+            else if (m_FacingRight && !m_GravityDown) {
+                m_Drawable = m_RightUpDeathImage;
+            }
+            else {
+                m_Drawable = m_LeftUpDeathImage;
             }
         }
         else {
-            // 奇數階段：隱藏角色
             m_Drawable = nullptr;
         }
 
@@ -75,7 +75,6 @@ void Player::Update() {
             m_IsDead = false;
             m_DeathTimer = 0.0f;
 
-            // 重生後恢復正常圖片
             if (m_FacingRight && m_GravityDown) {
                 m_Drawable = m_RightDownAnimation;
             }
@@ -95,7 +94,7 @@ void Player::Update() {
 
     float moveSpeed = 200.0f;
 
-    // 左右移動：長按持續移動
+    // 左右移動
     m_Velocity.x = 0.0f;
 
     if (Util::Input::IsKeyPressed(Util::Keycode::LEFT)) {
@@ -108,79 +107,84 @@ void Player::Update() {
         m_FacingRight = true;
     }
 
-
-    if (IsGrounded()) {
+    // 只有貼地時才允許翻轉重力
+    if (IsOnSurface()) {
         if (Util::Input::IsKeyDown(Util::Keycode::DOWN)) {
             m_GravityDown = false;
-        } else if (Util::Input::IsKeyDown(Util::Keycode::UP)) {
+        }
+        else if (Util::Input::IsKeyDown(Util::Keycode::UP)) {
             m_GravityDown = true;
-        } else if (Util::Input::IsKeyDown(Util::Keycode::SPACE)){
+        }
+        else if (Util::Input::IsKeyDown(Util::Keycode::SPACE)) {
             m_GravityDown = !m_GravityDown;
         }
     }
 
-
     float gravityDirection = m_GravityDown ? 1.0f : -1.0f;
     m_Velocity.y = m_Gravity * gravityDirection;
 
-    m_Transform.translation += m_Velocity * deltaTime;
+    // =========================
+    // X 軸碰撞
+    // =========================
+    glm::vec2 nextPosX = m_Transform.translation;
+    nextPosX.x += m_Velocity.x * deltaTime;
+
+    if (CanMoveTo(nextPosX)) {
+        m_Transform.translation.x = nextPosX.x;
+    }
+    else {
+        m_Velocity.x = 0.0f;
+    }
+
+    // =========================
+    // Y 軸碰撞
+    // =========================
+    glm::vec2 nextPosY = m_Transform.translation;
+    nextPosY.y += m_Velocity.y * deltaTime;
+
+    if (CanMoveTo(nextPosY)) {
+        m_Transform.translation.y = nextPosY.y;
+    }
+    else {
+        m_Velocity.y = 0.0f;
+    }
 
     bool isMoving = (m_Velocity.x != 0.0f);
 
     if (m_FacingRight && m_GravityDown) {
         if (isMoving) {
             m_Drawable = m_RightDownAnimation;
-        } else {
+        }
+        else {
             m_Drawable = m_RightDownImage;
         }
     }
     else if (!m_FacingRight && m_GravityDown) {
         if (isMoving) {
             m_Drawable = m_LeftDownAnimation;
-        } else {
+        }
+        else {
             m_Drawable = m_LeftDownImage;
         }
     }
     else if (m_FacingRight && !m_GravityDown) {
         if (isMoving) {
             m_Drawable = m_RightUpAnimation;
-        } else {
+        }
+        else {
             m_Drawable = m_RightUpImage;
         }
     }
     else {
         if (isMoving) {
             m_Drawable = m_LeftUpAnimation;
-        } else {
+        }
+        else {
             m_Drawable = m_LeftUpImage;
         }
     }
 
     m_Transform.scale = {3.0f, 3.0f};
-
-    // 畫面邊界 (對齊地圖 1080x720)
-    const float leftBound   = -540.0f;
-    const float rightBound  =  540.0f;
-    const float topBound    = -330.0f;
-    const float bottomBound =  330.0f;
-
-    if (m_Transform.translation.x < leftBound) {
-        m_Transform.translation.x = leftBound;
-        m_Velocity.x = 0.0f;
-    }
-    else if (m_Transform.translation.x > rightBound) {
-        m_Transform.translation.x = rightBound;
-        m_Velocity.x = 0.0f;
-    }
-
-    if (m_Transform.translation.y < topBound) {
-        m_Transform.translation.y = topBound;
-        m_Velocity.y = 0.0f;
-    }
-    else if (m_Transform.translation.y > bottomBound) {
-        m_Transform.translation.y = bottomBound;
-        m_Velocity.y = 0.0f;
-    }
 }
 
 glm::vec2 Player::GetPosition() const {
@@ -202,11 +206,66 @@ bool Player::IsDead() const {
     return m_IsDead;
 }
 
-bool Player::IsGrounded() {
-    const float topBound = -300.0f;
-    const float bottomBound = 300.0f;
-    const float epsilon = 1.0f; // 一點誤差
+bool Player::CanMoveTo(const glm::vec2& position) const {
+    if (!m_TileMap) {
+        return true;
+    }
 
-    return (m_Transform.translation.y >= bottomBound - epsilon ||
-            m_Transform.translation.y <= topBound + epsilon);
+    const float halfWidth = 24.0f * 3.0f / 2.0f;   // 36
+    const float halfHeight = 24.0f * 3.0f / 2.0f;  // 36
+
+    // 稍微縮小 hitbox，避免邊界抖動
+    const float shrink = 5.5f;
+
+    glm::vec2 topLeft(
+        position.x - halfWidth + shrink,
+        position.y - halfHeight + shrink
+    );
+
+    glm::vec2 topRight(
+        position.x + halfWidth - shrink,
+        position.y - halfHeight + shrink
+    );
+
+    glm::vec2 bottomLeft(
+        position.x - halfWidth + shrink,
+        position.y + halfHeight - shrink
+    );
+
+    glm::vec2 bottomRight(
+        position.x + halfWidth - shrink,
+        position.y + halfHeight - shrink
+    );
+
+    glm::ivec2 gridTL = m_TileMap->ScreenToGrid(topLeft);
+    glm::ivec2 gridTR = m_TileMap->ScreenToGrid(topRight);
+    glm::ivec2 gridBL = m_TileMap->ScreenToGrid(bottomLeft);
+    glm::ivec2 gridBR = m_TileMap->ScreenToGrid(bottomRight);
+
+    return
+        m_TileMap->GetTileType(gridTL.x, gridTL.y) == TileMap::TileType::Path &&
+        m_TileMap->GetTileType(gridTR.x, gridTR.y) == TileMap::TileType::Path &&
+        m_TileMap->GetTileType(gridBL.x, gridBL.y) == TileMap::TileType::Path &&
+        m_TileMap->GetTileType(gridBR.x, gridBR.y) == TileMap::TileType::Path;
+}
+
+bool Player::IsOnSurface() const {
+    return true;
+    if (!m_TileMap) {
+        return false;
+    }
+
+    glm::vec2 checkPos = m_Transform.translation;
+    float checkOffset = static_cast<float>(m_TileMap->GetTileSize()) * 1.5f;
+
+    if (m_GravityDown) {
+        // 往下掉，就檢查角色下方是不是牆
+        checkPos.y += checkOffset;
+    } else {
+        // 往上掉，就檢查角色上方是不是牆
+        checkPos.y -= checkOffset;
+    }
+
+    glm::ivec2 gridPos = m_TileMap->ScreenToGrid(checkPos);
+    return m_TileMap->GetTileType(gridPos.x, gridPos.y) == TileMap::TileType::Wall;
 }
