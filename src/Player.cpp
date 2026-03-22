@@ -92,7 +92,7 @@ void Player::Update() {
         return;
     }
 
-    float moveSpeed = 200.0f;
+    float moveSpeed = 400.0f;
 
     // 左右移動
     m_Velocity.x = 0.0f;

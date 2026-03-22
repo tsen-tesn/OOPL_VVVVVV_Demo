@@ -33,7 +33,6 @@ private:
 private:
     State m_CurrentState = State::START;
     std::shared_ptr<Player> m_Player;
-    std::vector<std::shared_ptr<Hazard>> m_Hazards;
     std::shared_ptr<LoadLevel> m_Level;
 };
 

@@ -5,9 +5,10 @@
 
 #include "Util/Time.hpp"
 
-MovingEnemy::MovingEnemy(const glm::vec2& startPos, const glm::vec2& endPos, const std::vector<std::string>& imagePaths) : m_StartPos(startPos), m_EndPos(endPos) {
+MovingEnemy::MovingEnemy(const glm::vec2& startPos, const glm::vec2& endPos, const std::vector<std::string>& imagePaths, float scale, float speed) : m_StartPos(startPos), m_EndPos(endPos) {
     m_Transform.translation = startPos;
-    m_Transform.scale = {2.0f, 2.0f};
+    m_Transform.scale = {scale, scale};
+    m_Speed = speed;
     m_Drawable = std::make_shared<Util::Animation>(imagePaths, true, 100, true);
 }
 
@@ -19,13 +20,15 @@ void MovingEnemy::Update() {
 
     float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
-    if (distance < 1.0f) {
-        m_MovingToEnd = !m_MovingToEnd;
-        return;
-    }
+    float moveDist = m_Speed * deltaTime;
 
-    direction /= distance;
-    m_Transform.translation += direction * m_Speed * deltaTime;
+    if (distance <= moveDist) {
+        m_Transform.translation = target;
+        m_MovingToEnd = !m_MovingToEnd;
+    } else {
+        direction /= distance;
+        m_Transform.translation += direction * moveDist;
+    }
 }
 
 bool MovingEnemy::is_touched(const glm::vec2& playerPos) const {

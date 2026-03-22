@@ -10,7 +10,7 @@
 class MovingEnemy : public Hazard {
 public:
     // 要給定 MovingEnemy 兩點移動的位置 以及動畫圖片路徑
-    MovingEnemy(const glm::vec2& startPos, const glm::vec2& endPos, const std::vector<std::string>& imagePaths);
+    MovingEnemy(const glm::vec2& startPos, const glm::vec2& endPos, const std::vector<std::string>& imagePaths, float scale = 1.0f, float speed = 100.0f);
 
     ~MovingEnemy() override = default;
 

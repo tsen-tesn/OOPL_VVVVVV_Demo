@@ -1,8 +1,13 @@
 #ifndef TILE_MAP_HPP
 #define TILE_MAP_HPP
 
+#include <memory>
+#include <string>
 #include <vector>
-#include <glm/glm.hpp>
+
+#include "Util/GameObject.hpp"
+#include "Util/Image.hpp"
+
 
 class TileMap {
 public:
@@ -19,7 +24,7 @@ public:
     int GetGridHeight()  const { return m_GridHeight; }
     int GetTileSize()    const { return m_TileSize; }
 
-    glm::vec2 GridToScreen(int col, int row) const;
+    glm::vec2 GridToScreen(float col, float row) const;
     glm::ivec2 ScreenToGrid(const glm::vec2& screenPos) const;
 
 private:
