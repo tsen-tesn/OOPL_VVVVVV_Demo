@@ -187,6 +187,7 @@ glm::vec2 Player::GetPosition() const {
     return m_Transform.translation;
 }
 
+
 void Player::Die() {
     if (m_IsDead) {
         return;
@@ -254,19 +255,23 @@ bool Player::IsOnSurface() const {
         return false;
     }
 
-    glm::vec2 checkPos = m_Transform.translation;
-    float checkOffset = static_cast<float>(m_TileMap->GetTileSize()) * 1.5f;
-
-    if (m_GravityDown) {
-        // 往下掉，就檢查角色下方是不是牆
-        checkPos.y += checkOffset;
-    } else {
-        // 往上掉，就檢查角色上方是不是牆
-        checkPos.y -= checkOffset;
+    if (m_Velocity.y == 0.0f) {
+        return true;
     }
 
-    glm::ivec2 gridPos = m_TileMap->ScreenToGrid(checkPos);
-    return m_TileMap->GetTileType(gridPos.x, gridPos.y) == TileMap::TileType::Wall;
+    // glm::vec2 checkPos = m_Transform.translation;
+    // float checkOffset = static_cast<float>(m_TileMap->GetTileSize()) * 1.5f;
+
+    // if (m_GravityDown) {
+    //     // 往下掉，就檢查角色下方是不是牆
+    //     checkPos.y += checkOffset;
+    // } else {
+    //     // 往上掉，就檢查角色上方是不是牆
+    //     checkPos.y -= checkOffset;
+    // }
+
+    // glm::ivec2 gridPos = m_TileMap->ScreenToGrid(checkPos);
+    // return m_TileMap->GetTileType(gridPos.x, gridPos.y) == TileMap::TileType::Wall;
 }
 
 void Player::MoveX(float amount) {
