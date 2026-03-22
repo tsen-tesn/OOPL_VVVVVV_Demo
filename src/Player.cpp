@@ -264,28 +264,62 @@ bool Player::CanMoveTo(const glm::vec2& position) const {
 }
 
 bool Player::IsOnSurface() const {
-    return true;
     if (!m_TileMap) {
         return false;
     }
 
-    if (m_Velocity.y == 0.0f) {
-        return true;
-    }
+    const float halfWidth  = 24.0f * 3.0f / 2.0f; // 36
+    const float halfHeight = 24.0f * 3.0f / 2.0f; // 36
 
-    glm::vec2 checkPos = m_Transform.translation;
-    float checkOffset = static_cast<float>(m_TileMap->GetTileSize()) * 1.5f;
+    const float shrinkLeft   = 21.0f;
+    const float shrinkRight  = 20.0f;
+    const float shrinkTop    = 5.0f;
+    const float shrinkBottom = 9.0f;
+
+    const float probeOffset = 10.0f; // 往外多探 1 pixel，避免剛好貼邊時誤判
+
+    glm::vec2 leftPoint;
+    glm::vec2 rightPoint;
 
     if (m_GravityDown) {
-        // 往下掉，就檢查角色下方是不是牆
-        checkPos.y += checkOffset;
+        // 檢查腳底左右兩點
+        leftPoint = {
+            m_Transform.translation.x - halfWidth + shrinkLeft,
+            m_Transform.translation.y + halfHeight - shrinkBottom + probeOffset
+        };
+
+        rightPoint = {
+            m_Transform.translation.x + halfWidth - shrinkRight,
+            m_Transform.translation.y + halfHeight - shrinkBottom + probeOffset
+        };
     } else {
-        // 往上掉，就檢查角色上方是不是牆
-        checkPos.y -= checkOffset;
+        // 檢查頭頂左右兩點
+        leftPoint = {
+            m_Transform.translation.x - halfWidth + shrinkLeft,
+            m_Transform.translation.y - halfHeight + shrinkTop - probeOffset
+        };
+
+        rightPoint = {
+            m_Transform.translation.x + halfWidth - shrinkRight,
+            m_Transform.translation.y - halfHeight + shrinkTop - probeOffset
+        };
     }
 
-    glm::ivec2 gridPos = m_TileMap->ScreenToGrid(checkPos);
-    return m_TileMap->GetTileType(gridPos.x, gridPos.y) == TileMap::TileType::Wall;
+    auto isWallPoint = [this](const glm::vec2& p) -> bool {
+        glm::ivec2 gridPos = m_TileMap->ScreenToGrid(p);
+
+        if (gridPos.x < 0 || gridPos.x >= m_TileMap->GetGridWidth()) {
+            return false;
+        }
+
+        if (gridPos.y < 0 || gridPos.y >= m_TileMap->GetGridHeight()) {
+            return false;
+        }
+
+        return m_TileMap->GetTileType(gridPos.x, gridPos.y) == TileMap::TileType::Wall;
+    };
+
+    return isWallPoint(leftPoint) || isWallPoint(rightPoint);
 }
 
 void Player::MoveX(float amount) {
