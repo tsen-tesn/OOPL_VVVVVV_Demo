@@ -53,16 +53,16 @@ void Player::Update() {
 
         if (blinkPhase % 2 == 0) {
             if (m_FacingRight && m_GravityDown) {
-                m_Drawable = m_RightDownDeathImage;
-            }
-            else if (!m_FacingRight && m_GravityDown) {
-                m_Drawable = m_LeftDownDeathImage;
-            }
-            else if (m_FacingRight && !m_GravityDown) {
                 m_Drawable = m_RightUpDeathImage;
             }
-            else {
+            else if (!m_FacingRight && m_GravityDown) {
                 m_Drawable = m_LeftUpDeathImage;
+            }
+            else if (m_FacingRight && !m_GravityDown) {
+                m_Drawable = m_RightDownDeathImage;
+            }
+            else {
+                m_Drawable = m_LeftDownDeathImage;
             }
         }
         else {
