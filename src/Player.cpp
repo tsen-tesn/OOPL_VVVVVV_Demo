@@ -125,7 +125,7 @@ void Player::Update() {
 
     glm::vec2 nextPosX = m_Transform.translation;
     nextPosX.x += m_Velocity.x * deltaTime;
-
+    
     if (CanMoveTo(nextPosX)) {
         m_Transform.translation.x = nextPosX.x;
     }
@@ -183,6 +183,10 @@ void Player::Update() {
     m_Transform.scale = {3.0f, 3.0f};
 }
 
+void Player::SetTileMap(std::shared_ptr<TileMap> tileMap) {
+    m_TileMap = tileMap;
+}
+
 glm::vec2 Player::GetPosition() const {
     return m_Transform.translation;
 }
@@ -237,16 +241,26 @@ bool Player::CanMoveTo(const glm::vec2& position) const {
         position.y + halfHeight - shrinkBottom
     );
 
-    glm::ivec2 gridTL = m_TileMap->ScreenToGrid(topLeft);
-    glm::ivec2 gridTR = m_TileMap->ScreenToGrid(topRight);
-    glm::ivec2 gridBL = m_TileMap->ScreenToGrid(bottomLeft);
-    glm::ivec2 gridBR = m_TileMap->ScreenToGrid(bottomRight);
+    auto canPassPoint = [this](const glm::vec2& p) -> bool {
+        glm::ivec2 gridPos = m_TileMap->ScreenToGrid(p);
 
-    return
-        m_TileMap->GetTileType(gridTL.x, gridTL.y) == TileMap::TileType::Path &&
-        m_TileMap->GetTileType(gridTR.x, gridTR.y) == TileMap::TileType::Path &&
-        m_TileMap->GetTileType(gridBL.x, gridBL.y) == TileMap::TileType::Path &&
-        m_TileMap->GetTileType(gridBR.x, gridBR.y) == TileMap::TileType::Path;
+        // 左右超出地圖：先放行，交給 App 的換房邏輯處理
+        if (gridPos.x < 0 || gridPos.x >= m_TileMap->GetGridWidth()) {
+            return true;
+        }
+
+        // 上下超出地圖：仍然視為不可通過
+        if (gridPos.y < 0 || gridPos.y >= m_TileMap->GetGridHeight()) {
+            return true;
+        }
+
+        return m_TileMap->GetTileType(gridPos.x, gridPos.y) == TileMap::TileType::Path;
+    };
+
+    return canPassPoint(topLeft) &&
+           canPassPoint(topRight) &&
+           canPassPoint(bottomLeft) &&
+           canPassPoint(bottomRight);
 }
 
 bool Player::IsOnSurface() const {
@@ -259,19 +273,19 @@ bool Player::IsOnSurface() const {
         return true;
     }
 
-    // glm::vec2 checkPos = m_Transform.translation;
-    // float checkOffset = static_cast<float>(m_TileMap->GetTileSize()) * 1.5f;
+    glm::vec2 checkPos = m_Transform.translation;
+    float checkOffset = static_cast<float>(m_TileMap->GetTileSize()) * 1.5f;
 
-    // if (m_GravityDown) {
-    //     // 往下掉，就檢查角色下方是不是牆
-    //     checkPos.y += checkOffset;
-    // } else {
-    //     // 往上掉，就檢查角色上方是不是牆
-    //     checkPos.y -= checkOffset;
-    // }
+    if (m_GravityDown) {
+        // 往下掉，就檢查角色下方是不是牆
+        checkPos.y += checkOffset;
+    } else {
+        // 往上掉，就檢查角色上方是不是牆
+        checkPos.y -= checkOffset;
+    }
 
-    // glm::ivec2 gridPos = m_TileMap->ScreenToGrid(checkPos);
-    // return m_TileMap->GetTileType(gridPos.x, gridPos.y) == TileMap::TileType::Wall;
+    glm::ivec2 gridPos = m_TileMap->ScreenToGrid(checkPos);
+    return m_TileMap->GetTileType(gridPos.x, gridPos.y) == TileMap::TileType::Wall;
 }
 
 void Player::MoveX(float amount) {
