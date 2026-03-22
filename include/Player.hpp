@@ -26,6 +26,9 @@ private:
     // glm::vec2 GetHalfSize() const;
     bool CanMoveTo(const glm::vec2& position) const;
 
+    void MoveX(float amount);
+    void MoveY(float amount);
+
 private:
     std::shared_ptr<TileMap> m_TileMap;
 

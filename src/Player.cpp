@@ -123,9 +123,6 @@ void Player::Update() {
     float gravityDirection = m_GravityDown ? 1.0f : -1.0f;
     m_Velocity.y = m_Gravity * gravityDirection;
 
-    // =========================
-    // X 軸碰撞
-    // =========================
     glm::vec2 nextPosX = m_Transform.translation;
     nextPosX.x += m_Velocity.x * deltaTime;
 
@@ -136,9 +133,6 @@ void Player::Update() {
         m_Velocity.x = 0.0f;
     }
 
-    // =========================
-    // Y 軸碰撞
-    // =========================
     glm::vec2 nextPosY = m_Transform.translation;
     nextPosY.y += m_Velocity.y * deltaTime;
 
@@ -148,6 +142,8 @@ void Player::Update() {
     else {
         m_Velocity.y = 0.0f;
     }
+
+
 
     bool isMoving = (m_Velocity.x != 0.0f);
 
@@ -211,30 +207,33 @@ bool Player::CanMoveTo(const glm::vec2& position) const {
         return true;
     }
 
-    const float halfWidth = 24.0f * 3.0f / 2.0f;   // 36
-    const float halfHeight = 24.0f * 3.0f / 2.0f;  // 36
+    const float halfWidth  = 24.0f * 3.0f / 2.0f; // 36
+    const float halfHeight = 24.0f * 3.0f / 2.0f; // 36
 
-    // 稍微縮小 hitbox，避免邊界抖動
-    const float shrink = 5.5f;
+    const float shrinkLeft   = 21.0f;
+    const float shrinkRight  = 20.0f;
+    const float shrinkTop    = 5.0f;
+    const float shrinkBottom = 9.0f;
 
+    // === 四個角 ===
     glm::vec2 topLeft(
-        position.x - halfWidth + shrink,
-        position.y - halfHeight + shrink
+        position.x - halfWidth  + shrinkLeft,
+        position.y - halfHeight + shrinkTop
     );
 
     glm::vec2 topRight(
-        position.x + halfWidth - shrink,
-        position.y - halfHeight + shrink
+        position.x + halfWidth  - shrinkRight,
+        position.y - halfHeight + shrinkTop
     );
 
     glm::vec2 bottomLeft(
-        position.x - halfWidth + shrink,
-        position.y + halfHeight - shrink
+        position.x - halfWidth  + shrinkLeft,
+        position.y + halfHeight - shrinkBottom
     );
 
     glm::vec2 bottomRight(
-        position.x + halfWidth - shrink,
-        position.y + halfHeight - shrink
+        position.x + halfWidth  - shrinkRight,
+        position.y + halfHeight - shrinkBottom
     );
 
     glm::ivec2 gridTL = m_TileMap->ScreenToGrid(topLeft);
@@ -268,4 +267,74 @@ bool Player::IsOnSurface() const {
 
     glm::ivec2 gridPos = m_TileMap->ScreenToGrid(checkPos);
     return m_TileMap->GetTileType(gridPos.x, gridPos.y) == TileMap::TileType::Wall;
+}
+
+void Player::MoveX(float amount) {
+    if (amount == 0.0f) {
+        return;
+    }
+
+    float step = (amount > 0.0f) ? 1.0f : -1.0f;
+    int moveCount = static_cast<int>(std::abs(amount));
+
+    for (int i = 0; i < moveCount; ++i) {
+        glm::vec2 nextPos = m_Transform.translation;
+        nextPos.x += step;
+
+        if (CanMoveTo(nextPos)) {
+            m_Transform.translation.x = nextPos.x;
+        }
+        else {
+            m_Velocity.x = 0.0f;
+            return;
+        }
+    }
+
+    float remainder = amount - step * moveCount;
+    if (std::abs(remainder) > 0.0f) {
+        glm::vec2 nextPos = m_Transform.translation;
+        nextPos.x += remainder;
+
+        if (CanMoveTo(nextPos)) {
+            m_Transform.translation.x = nextPos.x;
+        }
+        else {
+            m_Velocity.x = 0.0f;
+        }
+    }
+}
+
+void Player::MoveY(float amount) {
+    if (amount == 0.0f) {
+        return;
+    }
+
+    float step = (amount > 0.0f) ? 1.0f : -1.0f;
+    int moveCount = static_cast<int>(std::abs(amount));
+
+    for (int i = 0; i < moveCount; ++i) {
+        glm::vec2 nextPos = m_Transform.translation;
+        nextPos.y += step;
+
+        if (CanMoveTo(nextPos)) {
+            m_Transform.translation.y = nextPos.y;
+        }
+        else {
+            m_Velocity.y = 0.0f;
+            return;
+        }
+    }
+
+    float remainder = amount - step * moveCount;
+    if (std::abs(remainder) > 0.0f) {
+        glm::vec2 nextPos = m_Transform.translation;
+        nextPos.y += remainder;
+
+        if (CanMoveTo(nextPos)) {
+            m_Transform.translation.y = nextPos.y;
+        }
+        else {
+            m_Velocity.y = 0.0f;
+        }
+    }
 }
