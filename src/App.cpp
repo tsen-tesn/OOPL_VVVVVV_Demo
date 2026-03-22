@@ -9,19 +9,12 @@
 
 void App::Start() {
     LOG_TRACE("Start");
-    // for testing
-    m_Player  = std::make_shared<Player>();
     
-    
-    std::vector<std::string> enemyFrames = {
-        "Resources/Character/Enemy/enemy_4.png",
-        "Resources/Character/Enemy/enemy_5.png",
-    };
-    m_Hazards.push_back(std::make_shared<MovingEnemy>(glm::vec2(-200.0f, 0.0f), glm::vec2(200.0f, 0.0f), enemyFrames));
-
     m_Level = std::make_shared<LoadLevel>(
         RESOURCE_DIR "/Map/VVVVVV Demo/room1.json"
     );
+
+    m_Player = std::make_shared<Player>(m_Level->GetTileMap());
     m_CurrentState = State::UPDATE;
 }
 
