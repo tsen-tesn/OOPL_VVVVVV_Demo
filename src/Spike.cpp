@@ -13,7 +13,7 @@ bool Spike::is_touched(const glm::vec2 &playerPos) const {
     glm::vec2 spikePos = m_Transform.translation;
 
     float playerHalfSize = 12.0f * 3.0f;  // 玩家半寬（自己調）
-    float spikeHalfSize  = 4.0f * 3.0f ;  // Spike 半寬（自己調）
+    float spikeHalfSize  = 2.0f * 3.0f ;  // Spike 半寬（自己調）
 
     float playerLeft   = playerPos.x - playerHalfSize;
     float playerRight  = playerPos.x + playerHalfSize;
