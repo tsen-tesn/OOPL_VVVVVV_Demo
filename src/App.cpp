@@ -37,8 +37,6 @@ void App::Update() {
     float halfW = 540.0f; // match Player bounds
     float halfH = 330.0f;
 
-    
-
     // Right Edge
     if (pos.x >= halfW) {
         if (conn.right != -1) {

@@ -53,10 +53,10 @@
         {
             "name": "Moving_enemy",
             "image_paths": [
-                "Resources/Character/Enemy/stop_enemy/enemy_0.png",
-                "Resources/Character/Enemy/stop_enemy/enemy_1.png",
-                "Resources/Character/Enemy/stop_enemy/enemy_2.png",
-                "Resources/Character/Enemy/stop_enemy/enemy_3.png"
+                "Resources/Character/Enemy/enemy_0.png",
+                "Resources/Character/Enemy/enemy_1.png",
+                "Resources/Character/Enemy/enemy_2.png",
+                "Resources/Character/Enemy/enemy_3.png"
             ],
             "speed": 250.0,
             "scale": 3.0,

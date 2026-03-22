@@ -84,8 +84,8 @@ LoadLevel::LoadLevel(const std::string& jsonPath) {
 
                 if (layer.contains("positions") && layer["positions"].is_array()) {
                     for (const auto& pos : layer["positions"]) {
-                        int col = pos.value("col", 0);
-                        int row = pos.value("row", 0);
+                        float col = pos.value("col", 0.0f);
+                        float row = pos.value("row", 0.0f);
                         glm::vec2 screenPos = m_TileMap->GridToScreen(col, row);
                         
                         auto spike = std::make_shared<Spike>(screenPos, imagePath);
@@ -113,10 +113,10 @@ LoadLevel::LoadLevel(const std::string& jsonPath) {
                     for (const auto& path : layer["moving_paths"]) {
                         if (!path.contains("start") || !path.contains("end")) continue;
                         
-                        int startCol = path["start"].value("col", 0);
-                        int startRow = path["start"].value("row", 0);
-                        int endCol = path["end"].value("col", 0);
-                        int endRow = path["end"].value("row", 0);
+                        float startCol = path["start"].value("col", 0.0f);
+                        float startRow = path["start"].value("row", 0.0f);
+                        float endCol = path["end"].value("col", 0.0f);
+                        float endRow = path["end"].value("row", 0.0f);
 
                         glm::vec2 startPos = m_TileMap->GridToScreen(startCol, startRow);
                         glm::vec2 endPos = m_TileMap->GridToScreen(endCol, endRow);
