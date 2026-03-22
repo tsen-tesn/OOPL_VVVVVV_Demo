@@ -15,8 +15,10 @@ class Player : public Util::GameObject {
 public:
     Player(std::shared_ptr<TileMap> tileMap);
     void Update();
+    void SetTileMap(std::shared_ptr<TileMap> tileMap);
 
     glm::vec2 GetPosition() const;
+
 
     void Die();
     bool IsDead() const;
@@ -25,6 +27,9 @@ private:
     bool IsOnSurface() const;
     // glm::vec2 GetHalfSize() const;
     bool CanMoveTo(const glm::vec2& position) const;
+
+    void MoveX(float amount);
+    void MoveY(float amount);
 
 private:
     std::shared_ptr<TileMap> m_TileMap;

@@ -92,7 +92,7 @@ void Player::Update() {
         return;
     }
 
-    float moveSpeed = 200.0f;
+    float moveSpeed = 400.0f;
 
     // 左右移動
     m_Velocity.x = 0.0f;
@@ -123,12 +123,9 @@ void Player::Update() {
     float gravityDirection = m_GravityDown ? 1.0f : -1.0f;
     m_Velocity.y = m_Gravity * gravityDirection;
 
-    // =========================
-    // X 軸碰撞
-    // =========================
     glm::vec2 nextPosX = m_Transform.translation;
     nextPosX.x += m_Velocity.x * deltaTime;
-
+    
     if (CanMoveTo(nextPosX)) {
         m_Transform.translation.x = nextPosX.x;
     }
@@ -136,9 +133,6 @@ void Player::Update() {
         m_Velocity.x = 0.0f;
     }
 
-    // =========================
-    // Y 軸碰撞
-    // =========================
     glm::vec2 nextPosY = m_Transform.translation;
     nextPosY.y += m_Velocity.y * deltaTime;
 
@@ -148,6 +142,8 @@ void Player::Update() {
     else {
         m_Velocity.y = 0.0f;
     }
+
+
 
     bool isMoving = (m_Velocity.x != 0.0f);
 
@@ -187,9 +183,14 @@ void Player::Update() {
     m_Transform.scale = {3.0f, 3.0f};
 }
 
+void Player::SetTileMap(std::shared_ptr<TileMap> tileMap) {
+    m_TileMap = tileMap;
+}
+
 glm::vec2 Player::GetPosition() const {
     return m_Transform.translation;
 }
+
 
 void Player::Die() {
     if (m_IsDead) {
@@ -211,61 +212,182 @@ bool Player::CanMoveTo(const glm::vec2& position) const {
         return true;
     }
 
-    const float halfWidth = 24.0f * 3.0f / 2.0f;   // 36
-    const float halfHeight = 24.0f * 3.0f / 2.0f;  // 36
+    const float halfWidth  = 24.0f * 3.0f / 2.0f; // 36
+    const float halfHeight = 24.0f * 3.0f / 2.0f; // 36
 
-    // 稍微縮小 hitbox，避免邊界抖動
-    const float shrink = 5.5f;
+    const float shrinkLeft   = 21.0f;
+    const float shrinkRight  = 20.0f;
+    const float shrinkTop    = 5.0f;
+    const float shrinkBottom = 9.0f;
 
+    // === 四個角 ===
     glm::vec2 topLeft(
-        position.x - halfWidth + shrink,
-        position.y - halfHeight + shrink
+        position.x - halfWidth  + shrinkLeft,
+        position.y - halfHeight + shrinkTop
     );
 
     glm::vec2 topRight(
-        position.x + halfWidth - shrink,
-        position.y - halfHeight + shrink
+        position.x + halfWidth  - shrinkRight,
+        position.y - halfHeight + shrinkTop
     );
 
     glm::vec2 bottomLeft(
-        position.x - halfWidth + shrink,
-        position.y + halfHeight - shrink
+        position.x - halfWidth  + shrinkLeft,
+        position.y + halfHeight - shrinkBottom
     );
 
     glm::vec2 bottomRight(
-        position.x + halfWidth - shrink,
-        position.y + halfHeight - shrink
+        position.x + halfWidth  - shrinkRight,
+        position.y + halfHeight - shrinkBottom
     );
 
-    glm::ivec2 gridTL = m_TileMap->ScreenToGrid(topLeft);
-    glm::ivec2 gridTR = m_TileMap->ScreenToGrid(topRight);
-    glm::ivec2 gridBL = m_TileMap->ScreenToGrid(bottomLeft);
-    glm::ivec2 gridBR = m_TileMap->ScreenToGrid(bottomRight);
+    auto canPassPoint = [this](const glm::vec2& p) -> bool {
+        glm::ivec2 gridPos = m_TileMap->ScreenToGrid(p);
 
-    return
-        m_TileMap->GetTileType(gridTL.x, gridTL.y) == TileMap::TileType::Path &&
-        m_TileMap->GetTileType(gridTR.x, gridTR.y) == TileMap::TileType::Path &&
-        m_TileMap->GetTileType(gridBL.x, gridBL.y) == TileMap::TileType::Path &&
-        m_TileMap->GetTileType(gridBR.x, gridBR.y) == TileMap::TileType::Path;
+        // 左右超出地圖：先放行，交給 App 的換房邏輯處理
+        if (gridPos.x < 0 || gridPos.x >= m_TileMap->GetGridWidth()) {
+            return true;
+        }
+
+        // 上下超出地圖：仍然視為不可通過
+        if (gridPos.y < 0 || gridPos.y >= m_TileMap->GetGridHeight()) {
+            return true;
+        }
+
+        return m_TileMap->GetTileType(gridPos.x, gridPos.y) == TileMap::TileType::Path;
+    };
+
+    return canPassPoint(topLeft) &&
+           canPassPoint(topRight) &&
+           canPassPoint(bottomLeft) &&
+           canPassPoint(bottomRight);
 }
 
 bool Player::IsOnSurface() const {
-    return true;
     if (!m_TileMap) {
         return false;
     }
 
-    glm::vec2 checkPos = m_Transform.translation;
-    float checkOffset = static_cast<float>(m_TileMap->GetTileSize()) * 1.5f;
+    const float halfWidth  = 24.0f * 3.0f / 2.0f; // 36
+    const float halfHeight = 24.0f * 3.0f / 2.0f; // 36
+
+    const float shrinkLeft   = 21.0f;
+    const float shrinkRight  = 20.0f;
+    const float shrinkTop    = 5.0f;
+    const float shrinkBottom = 9.0f;
+
+    const float probeOffset = 10.0f; // 往外多探 1 pixel，避免剛好貼邊時誤判
+
+    glm::vec2 leftPoint;
+    glm::vec2 rightPoint;
 
     if (m_GravityDown) {
-        // 往下掉，就檢查角色下方是不是牆
-        checkPos.y += checkOffset;
+        // 檢查腳底左右兩點
+        leftPoint = {
+            m_Transform.translation.x - halfWidth + shrinkLeft,
+            m_Transform.translation.y + halfHeight - shrinkBottom + probeOffset
+        };
+
+        rightPoint = {
+            m_Transform.translation.x + halfWidth - shrinkRight,
+            m_Transform.translation.y + halfHeight - shrinkBottom + probeOffset
+        };
     } else {
-        // 往上掉，就檢查角色上方是不是牆
-        checkPos.y -= checkOffset;
+        // 檢查頭頂左右兩點
+        leftPoint = {
+            m_Transform.translation.x - halfWidth + shrinkLeft,
+            m_Transform.translation.y - halfHeight + shrinkTop - probeOffset
+        };
+
+        rightPoint = {
+            m_Transform.translation.x + halfWidth - shrinkRight,
+            m_Transform.translation.y - halfHeight + shrinkTop - probeOffset
+        };
     }
 
-    glm::ivec2 gridPos = m_TileMap->ScreenToGrid(checkPos);
-    return m_TileMap->GetTileType(gridPos.x, gridPos.y) == TileMap::TileType::Wall;
+    auto isWallPoint = [this](const glm::vec2& p) -> bool {
+        glm::ivec2 gridPos = m_TileMap->ScreenToGrid(p);
+
+        if (gridPos.x < 0 || gridPos.x >= m_TileMap->GetGridWidth()) {
+            return false;
+        }
+
+        if (gridPos.y < 0 || gridPos.y >= m_TileMap->GetGridHeight()) {
+            return false;
+        }
+
+        return m_TileMap->GetTileType(gridPos.x, gridPos.y) == TileMap::TileType::Wall;
+    };
+
+    return isWallPoint(leftPoint) || isWallPoint(rightPoint);
+}
+
+void Player::MoveX(float amount) {
+    if (amount == 0.0f) {
+        return;
+    }
+
+    float step = (amount > 0.0f) ? 1.0f : -1.0f;
+    int moveCount = static_cast<int>(std::abs(amount));
+
+    for (int i = 0; i < moveCount; ++i) {
+        glm::vec2 nextPos = m_Transform.translation;
+        nextPos.x += step;
+
+        if (CanMoveTo(nextPos)) {
+            m_Transform.translation.x = nextPos.x;
+        }
+        else {
+            m_Velocity.x = 0.0f;
+            return;
+        }
+    }
+
+    float remainder = amount - step * moveCount;
+    if (std::abs(remainder) > 0.0f) {
+        glm::vec2 nextPos = m_Transform.translation;
+        nextPos.x += remainder;
+
+        if (CanMoveTo(nextPos)) {
+            m_Transform.translation.x = nextPos.x;
+        }
+        else {
+            m_Velocity.x = 0.0f;
+        }
+    }
+}
+
+void Player::MoveY(float amount) {
+    if (amount == 0.0f) {
+        return;
+    }
+
+    float step = (amount > 0.0f) ? 1.0f : -1.0f;
+    int moveCount = static_cast<int>(std::abs(amount));
+
+    for (int i = 0; i < moveCount; ++i) {
+        glm::vec2 nextPos = m_Transform.translation;
+        nextPos.y += step;
+
+        if (CanMoveTo(nextPos)) {
+            m_Transform.translation.y = nextPos.y;
+        }
+        else {
+            m_Velocity.y = 0.0f;
+            return;
+        }
+    }
+
+    float remainder = amount - step * moveCount;
+    if (std::abs(remainder) > 0.0f) {
+        glm::vec2 nextPos = m_Transform.translation;
+        nextPos.y += remainder;
+
+        if (CanMoveTo(nextPos)) {
+            m_Transform.translation.y = nextPos.y;
+        }
+        else {
+            m_Velocity.y = 0.0f;
+        }
+    }
 }

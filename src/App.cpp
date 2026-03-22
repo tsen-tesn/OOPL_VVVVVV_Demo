@@ -34,16 +34,15 @@ void App::Update() {
     // Simple Room Transition Logic
     glm::vec2 pos = m_Player->GetTransform().translation;
     auto conn = m_Level->GetConnections();
-    float halfW = 540.0f; // match Player bounds
+    float halfW = 520.0f; // match Player bounds
     float halfH = 330.0f;
-
-    
 
     // Right Edge
     if (pos.x >= halfW) {
         if (conn.right != -1) {
             try {
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.right) + ".json");
+                m_Player->SetTileMap(m_Level->GetTileMap());
                 pos.x = -halfW + 10.0f; // wrap to left side
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load right connection: {}", e.what());
@@ -58,6 +57,7 @@ void App::Update() {
         if (conn.left != -1) {
             try {
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.left) + ".json");
+                m_Player->SetTileMap(m_Level->GetTileMap());
                 pos.x = halfW - 10.0f; // wrap to right side
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load left connection: {}", e.what());
@@ -72,6 +72,7 @@ void App::Update() {
         if (conn.up != -1) {
             try {
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.up) + ".json");
+                m_Player->SetTileMap(m_Level->GetTileMap());
                 pos.y = -halfH + 10.0f; // wrap to bottom
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load up connection: {}", e.what());
@@ -86,6 +87,7 @@ void App::Update() {
         if (conn.down != -1) {
             try {
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.down) + ".json");
+                m_Player->SetTileMap(m_Level->GetTileMap());
                 pos.y = halfH - 10.0f; // wrap to top
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load down connection: {}", e.what());
