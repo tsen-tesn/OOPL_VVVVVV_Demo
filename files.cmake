@@ -14,6 +14,8 @@ set(INCLUDE_FILES
     TileMap.hpp
     MovingEnemy.hpp
     Loadlevel.hpp
+    Trigger.hpp
+    CheckPoint.hpp
 )
 
 set(TEST_FILES
