@@ -5,6 +5,7 @@ set(SRC_FILES
     TileMap.cpp
     MovingEnemy.cpp
     Loadlevel.cpp
+    CheckPoint.cpp
 )
 
 set(INCLUDE_FILES

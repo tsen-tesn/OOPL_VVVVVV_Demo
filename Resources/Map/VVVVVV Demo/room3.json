@@ -54,7 +54,7 @@
             "name": "CheckPoint",
             "type": "up",
             "positions": [
-                {"col": 22, "row": 22}
+                {"col": 22, "row": 21.4}
             ]
         }
     ]       
