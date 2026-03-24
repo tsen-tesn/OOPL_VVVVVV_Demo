@@ -101,6 +101,13 @@
             "moving_paths": [
                 {"start": {"col": 29, "row": 6}, "end": {"col": 29, "row": 15}}
             ]
+        },
+        {
+            "name": "CheckPoint",
+            "type": "up",
+            "positions": [
+                {"col": 19, "row": 12.4}
+            ]
         }
     ]
 }
