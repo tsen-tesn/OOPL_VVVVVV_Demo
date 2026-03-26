@@ -7,6 +7,7 @@ set(SRC_FILES
     Loadlevel.cpp
     Platform.cpp
     MovingPlatform.cpp
+    DisappearingPlatform.cpp
 )
 
 set(INCLUDE_FILES
@@ -18,6 +19,7 @@ set(INCLUDE_FILES
     Loadlevel.hpp
     Platform.hpp
     MovingPlatform.hpp
+    DisappearingPlatform.hpp
 )
 
 set(TEST_FILES

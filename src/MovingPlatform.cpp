@@ -7,7 +7,7 @@ MovingPlatform::MovingPlatform(const glm::vec2& StartPos, const glm::vec2& EndPo
     
     m_Transform.translation = StartPos;
     m_Transform.scale = {scale, scale};
-    LOG_INFO("MovingPlatform created");
+    // LOG_INFO("MovingPlatform created");
 }
 
 void MovingPlatform::Update() {
