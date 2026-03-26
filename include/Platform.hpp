@@ -5,11 +5,11 @@
 
 class Platform : public Util::GameObject {
 public:
-    Platform();
+    Platform() = default;
 
-    virtual void Update();
+    virtual void Update() {}
 
-    virtual bool IsSolid() const;
+    virtual bool IsSolid() const { return true; }
 };
 
 #endif // PLATFORM_HPP

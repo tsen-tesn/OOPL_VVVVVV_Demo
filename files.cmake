@@ -5,9 +5,9 @@ set(SRC_FILES
     TileMap.cpp
     MovingEnemy.cpp
     Loadlevel.cpp
-    Platform.cpp
     MovingPlatform.cpp
     DisappearingPlatform.cpp
+    DisappearingPlatformGroup.cpp
 )
 
 set(INCLUDE_FILES
@@ -20,6 +20,7 @@ set(INCLUDE_FILES
     Platform.hpp
     MovingPlatform.hpp
     DisappearingPlatform.hpp
+    DisappearingPlatformGroup.hpp
 )
 
 set(TEST_FILES
