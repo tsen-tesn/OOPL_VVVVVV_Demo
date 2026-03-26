@@ -1,5 +1,6 @@
 #include "App.hpp"
 
+#include <glm/glm.hpp>
 #include "Util/Image.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
@@ -16,13 +17,22 @@ void App::Start() {
 
     m_Player = std::make_shared<Player>(m_Level->GetTileMap());
     m_CurrentState = State::UPDATE;
+    m_MovingPlatforms.push_back(std::make_shared<MovingPlatform>(glm::vec2(52.0f, 100.0f), glm::vec2(136.0f, 100.0f), "./Resources/PlatForm/platform_0.png", 3.0f, 100.0f));
+    m_MovingPlatforms.push_back(std::make_shared<MovingPlatform>(glm::vec2(76.0f, 100.0f), glm::vec2(160.0f, 100.0f), "./Resources/PlatForm/platform_0.png", 3.0f, 100.0f));
+    m_MovingPlatforms.push_back(std::make_shared<MovingPlatform>(glm::vec2(100.0f, 100.0f), glm::vec2(184.0f, 100.0f), "./Resources/PlatForm/platform_0.png", 3.0f, 100.0f));
+    m_MovingPlatforms.push_back(std::make_shared<MovingPlatform>(glm::vec2(124.0f, 100.0f), glm::vec2(208.0f, 100.0f), "./Resources/PlatForm/platform_0.png", 3.0f, 100.0f));
 }
 
 void App::Update() {
     m_Level->Draw();    // background first
     m_Player->Update();
     m_Player->Draw();
-    
+
+    for (const auto& platform : m_MovingPlatforms) {
+        platform->Update();
+        platform->Draw();
+    }
+
     for (const auto& hazard : m_Level->GetHazards()) {
         hazard->Update();
         if (hazard->is_touched(m_Player->GetPosition())) {
@@ -30,6 +40,8 @@ void App::Update() {
             LOG_INFO("Player died");
         }
     }
+    
+    
     
     // Simple Room Transition Logic
     glm::vec2 pos = m_Player->GetTransform().translation;

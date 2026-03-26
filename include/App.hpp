@@ -10,6 +10,7 @@
 #include "Loadlevel.hpp"
 #include "MovingEnemy.hpp"  
 #include "TileMap.hpp"
+#include "MovingPlatform.hpp"
 
 class App {
 public:
@@ -34,6 +35,7 @@ private:
     State m_CurrentState = State::START;
     std::shared_ptr<Player> m_Player;
     std::shared_ptr<LoadLevel> m_Level;
+    std::vector<std::shared_ptr<MovingPlatform>> m_MovingPlatforms;
 };
 
 #endif

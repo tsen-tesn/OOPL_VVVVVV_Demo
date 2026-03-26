@@ -5,6 +5,8 @@ set(SRC_FILES
     TileMap.cpp
     MovingEnemy.cpp
     Loadlevel.cpp
+    Platform.cpp
+    MovingPlatform.cpp
 )
 
 set(INCLUDE_FILES
@@ -14,6 +16,8 @@ set(INCLUDE_FILES
     TileMap.hpp
     MovingEnemy.hpp
     Loadlevel.hpp
+    Platform.hpp
+    MovingPlatform.hpp
 )
 
 set(TEST_FILES
