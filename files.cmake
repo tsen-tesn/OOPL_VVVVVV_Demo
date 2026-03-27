@@ -6,6 +6,9 @@ set(SRC_FILES
     MovingEnemy.cpp
     Loadlevel.cpp
     CheckPoint.cpp
+    MovingPlatform.cpp
+    DisappearingPlatform.cpp
+    DisappearingPlatformGroup.cpp
 )
 
 set(INCLUDE_FILES
@@ -17,6 +20,10 @@ set(INCLUDE_FILES
     Loadlevel.hpp
     Trigger.hpp
     CheckPoint.hpp
+    Platform.hpp
+    MovingPlatform.hpp
+    DisappearingPlatform.hpp
+    DisappearingPlatformGroup.hpp
 )
 
 set(TEST_FILES

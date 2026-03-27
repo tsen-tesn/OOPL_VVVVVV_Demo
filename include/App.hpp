@@ -11,6 +11,8 @@
 #include "MovingEnemy.hpp"  
 #include "TileMap.hpp"
 #include "CheckPoint.hpp"
+#include "MovingPlatform.hpp"
+#include "DisappearingPlatformGroup.hpp"
 
 class App {
 public:
@@ -37,6 +39,8 @@ private:
     std::shared_ptr<LoadLevel> m_Level;
     int m_CurrentRoomID = 1;
     int m_RespawnRoomID = 1;
+    std::vector<std::shared_ptr<MovingPlatform>> m_MovingPlatforms;
+    std::vector<std::shared_ptr<DisappearingPlatformGroup>> m_DisappearingPlatformGroups;
 };
 
 #endif
