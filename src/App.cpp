@@ -11,33 +11,17 @@
 void App::Start() {
     LOG_TRACE("Start");
     
-    m_Level = std::make_shared<LoadLevel>(
-        RESOURCE_DIR "/Map/VVVVVV Demo/room1.json"
-    );
-
-    m_Player = std::make_shared<Player>(m_Level->GetTileMap());
-    m_CurrentState = State::UPDATE;
-
-    // For TEST
-    m_Platforms.push_back(std::make_shared<MovingPlatform>(glm::vec2(52.0f, 100.0f), glm::vec2(136.0f, 100.0f), "./Resources/PlatForm/platform_0.png", 3.0f, 100.0f));
-    m_Platforms.push_back(std::make_shared<MovingPlatform>(glm::vec2(76.0f, 100.0f), glm::vec2(160.0f, 100.0f), "./Resources/PlatForm/platform_0.png", 3.0f, 100.0f));
-    m_Platforms.push_back(std::make_shared<MovingPlatform>(glm::vec2(100.0f, 100.0f), glm::vec2(184.0f, 100.0f), "./Resources/PlatForm/platform_0.png", 3.0f, 100.0f));
-    m_Platforms.push_back(std::make_shared<MovingPlatform>(glm::vec2(124.0f, 100.0f), glm::vec2(208.0f, 100.0f), "./Resources/PlatForm/platform_0.png", 3.0f, 100.0f));
-
-    std::vector<std::string> images = {
-        "./Resources/PlatForm/platform_0.png",
-        "./Resources/PlatForm/platform_1.png",
-        "./Resources/PlatForm/platform_2.png",
-        "./Resources/PlatForm/platform_3.png"
-    };
-    std::vector<glm::vec2> positions = {
-        glm::vec2(100.0f, -100.0f),
-        glm::vec2(124.0f, -100.0f),
-        glm::vec2(148.0f, -100.0f),
-        glm::vec2(172.0f, -100.0f)
-    };
-
-    m_Platforms.push_back(std::make_shared<DisappearingPlatformGroup>(positions, images, 3.0f));
+    try {
+        m_Level = std::make_shared<LoadLevel>(
+            RESOURCE_DIR "/Map/VVVVVV Demo/room1.json"
+        );
+        m_Player = std::make_shared<Player>(m_Level->GetTileMap());
+        m_Platforms = m_Level->GetPlatforms();
+        m_CurrentState = State::UPDATE;
+    } catch (const std::exception& e) {
+        LOG_ERROR("App::Start failed to load level: {}", e.what());
+        m_CurrentState = State::END;
+    }
 }
 
 void App::Update() {
@@ -75,6 +59,7 @@ void App::Update() {
             try {
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.right) + ".json");
                 m_Player->SetTileMap(m_Level->GetTileMap());
+                m_Platforms = m_Level->GetPlatforms();
                 pos.x = -halfW + 10.0f; // wrap to left side
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load right connection: {}", e.what());
@@ -90,6 +75,7 @@ void App::Update() {
             try {
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.left) + ".json");
                 m_Player->SetTileMap(m_Level->GetTileMap());
+                m_Platforms = m_Level->GetPlatforms();
                 pos.x = halfW - 10.0f; // wrap to right side
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load left connection: {}", e.what());
@@ -105,6 +91,7 @@ void App::Update() {
             try {
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.up) + ".json");
                 m_Player->SetTileMap(m_Level->GetTileMap());
+                m_Platforms = m_Level->GetPlatforms();
                 pos.y = -halfH + 10.0f; // wrap to bottom
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load up connection: {}", e.what());
@@ -120,6 +107,7 @@ void App::Update() {
             try {
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.down) + ".json");
                 m_Player->SetTileMap(m_Level->GetTileMap());
+                m_Platforms = m_Level->GetPlatforms();
                 pos.y = halfH - 10.0f; // wrap to top
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load down connection: {}", e.what());

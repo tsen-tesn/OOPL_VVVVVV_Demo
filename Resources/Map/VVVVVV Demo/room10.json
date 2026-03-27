@@ -131,6 +131,63 @@
                 {"col": 35, "row": 19},
                 {"col": 36, "row": 19}
             ]
+        },
+        {
+            "name": "MovingPlatform",
+            "image_paths": [
+                "Resources/PlatForm/platform_0.png",
+                "Resources/PlatForm/platform_0.png",
+                "Resources/PlatForm/platform_0.png",
+                "Resources/PlatForm/platform_0.png"
+            ],
+            "positions": [
+                {
+                    "start": {"col": 5, "row": 20},
+                    "end": {"col": 33, "row": 20}
+                },
+                {
+                    "start": {"col": 6, "row": 20},
+                    "end": {"col": 34, "row": 20}
+                },
+                {
+                    "start": {"col": 7, "row": 20},
+                    "end": {"col": 35, "row": 20}
+                },
+                {
+                    "start": {"col": 8, "row": 20},
+                    "end": {"col": 36, "row": 20}
+                }
+            ]
+        },
+        {
+            "name": "DisappearingPlatformGroup",
+            "image_paths":[
+                "Resources/PlatForm/platform_0.png",
+                "Resources/PlatForm/platform_1.png",
+                "Resources/PlatForm/platform_2.png",
+                "Resources/PlatForm/platform_3.png"
+            ],
+            "positions": [
+                [
+                    {"col": 13, "row": 7},
+                    {"col": 14, "row": 7},
+                    {"col": 15, "row": 7},
+                    {"col": 16, "row": 7}
+                ],
+                [
+                    {"col": 17, "row": 7},
+                    {"col": 18, "row": 7},
+                    {"col": 19, "row": 7},
+                    {"col": 20, "row": 7}
+                ],
+                [
+                    {"col": 21, "row": 7},
+                    {"col": 22, "row": 7},
+                    {"col": 23, "row": 7},
+                    {"col": 24, "row": 7}
+                ]
+        
+            ]
         }
     ]       
 }

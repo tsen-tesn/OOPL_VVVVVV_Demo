@@ -1,4 +1,6 @@
 #include "Loadlevel.hpp"
+#include "DisappearingPlatformGroup.hpp"
+#include "MovingPlatform.hpp"
 #include "MovingEnemy.hpp"
 #include "Util/Image.hpp"
 #include "Util/Logger.hpp"
@@ -124,6 +126,90 @@ LoadLevel::LoadLevel(const std::string& jsonPath) {
                         auto enemy = std::make_shared<MovingEnemy>(startPos, endPos, animPaths, scaleValue, speedValue);
                         enemy->SetZIndex(10.0f);
                         m_Hazards.push_back(enemy);
+                    }
+                }
+            }
+
+            else if (name == "DisappearingPlatformGroup") {
+                std::vector<std::string> imagePaths;
+                if (layer.contains("image_paths") && layer["image_paths"].is_array()) {
+                    imagePaths = layer["image_paths"].get<std::vector<std::string>>();
+                } else if (layer.contains("image_path")) {
+                    imagePaths.push_back(layer["image_path"].get<std::string>());
+                }
+                
+                if (imagePaths.empty()) continue;
+
+                if (layer.contains("positions") && layer["positions"].is_array()) {
+                    const auto& positionsArray = layer["positions"];
+                    if (!positionsArray.empty() && positionsArray[0].is_array()) {
+                        // 二維陣列格式：多個 group
+                        for (const auto& groupPositions : positionsArray) {
+                            if (!groupPositions.is_array()) continue;
+                            std::vector<glm::vec2> positions;
+                            for (const auto& pos : groupPositions) {
+                                if (!pos.is_object()) continue;
+                                float col = pos.value("col", 0.0f);
+                                float row = pos.value("row", 0.0f);
+                                glm::vec2 screenPos = m_TileMap->GridToScreen(col, row);
+                                positions.push_back(screenPos);
+                            }
+                            if (positions.empty()) continue;
+                            auto group = std::make_shared<DisappearingPlatformGroup>(positions, imagePaths, 3.0f);
+                            m_Platforms.push_back(group);
+                        }
+                    } else {
+                        // 一維陣列格式：單一 group
+                        std::vector<glm::vec2> positions;
+                        for (const auto& pos : positionsArray) {
+                            if (!pos.is_object()) continue;
+                            float col = pos.value("col", 0.0f);
+                            float row = pos.value("row", 0.0f);
+                            glm::vec2 screenPos = m_TileMap->GridToScreen(col, row);
+                            positions.push_back(screenPos);
+                        }
+                        if (!positions.empty()) {
+                            auto group = std::make_shared<DisappearingPlatformGroup>(positions, imagePaths, 3.0f);
+                            m_Platforms.push_back(group);
+                        }
+                    }
+                }
+            }
+
+            else if (name == "MovingPlatform") {
+                std::vector<std::string> imagePaths;
+                if (layer.contains("image_paths") && layer["image_paths"].is_array()) {
+                    imagePaths = layer["image_paths"].get<std::vector<std::string>>();
+                } else if (layer.contains("image_path")) {
+                    imagePaths.push_back(layer["image_path"].get<std::string>());
+                }
+                
+                if (imagePaths.empty()) continue;
+
+                float scaleValue = layer.value("scale", 3.0f);
+                float speedValue = layer.value("speed", 200.0f);
+
+                if (layer.contains("positions") && layer["positions"].is_array()) {
+                    const auto& positionsArray = layer["positions"];
+                    size_t numPlatforms = std::min(imagePaths.size(), positionsArray.size());
+                    for (size_t i = 0; i < numPlatforms; ++i) {
+                        const auto& pos = positionsArray[i];
+                        if (!pos.is_object() || !pos.contains("start") || !pos.contains("end")) continue;
+                        
+                        const auto& start = pos["start"];
+                        const auto& end = pos["end"];
+                        if (!start.is_object() || !end.is_object()) continue;
+                        
+                        float startCol = start.value("col", 0.0f);
+                        float startRow = start.value("row", 0.0f);
+                        float endCol = end.value("col", 0.0f);
+                        float endRow = end.value("row", 0.0f);
+                        
+                        glm::vec2 startPos = m_TileMap->GridToScreen(startCol, startRow);
+                        glm::vec2 endPos = m_TileMap->GridToScreen(endCol, endRow);
+                        
+                        auto platform = std::make_shared<MovingPlatform>(startPos, endPos, imagePaths[i], scaleValue, speedValue);
+                        m_Platforms.push_back(platform);
                     }
                 }
             }
