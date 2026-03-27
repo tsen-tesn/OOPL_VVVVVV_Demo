@@ -70,10 +70,7 @@ void Player::Update() {
         }
 
         if (m_DeathTimer >= m_DeathDuration) {
-            m_Transform.translation = {-200.0f, 0.0f};
-            m_Velocity = {0.0f, 0.0f};
-            m_IsDead = false;
-            m_DeathTimer = 0.0f;
+           Respawn();
 
             if (m_FacingRight && m_GravityDown) {
                 m_Drawable = m_RightDownAnimation;
@@ -191,12 +188,28 @@ glm::vec2 Player::GetPosition() const {
     return m_Transform.translation;
 }
 
+void Player::SetRespawnPos(const glm::vec2& pos) {
+    m_RespawnPos = pos;
+    m_RespawnGravityDown = m_GravityDown;
+}
+
+void Player::Respawn() {
+    if (m_RespawnGravityDown) {
+        m_Transform.translation = m_RespawnPos - glm::vec2(0.0f, 9.0f);
+    }
+    else {
+        m_Transform.translation = m_RespawnPos + glm::vec2(0.0f, 9.0f);
+    }
+    m_Velocity = {0.0f, 0.0f};
+    m_GravityDown = m_RespawnGravityDown;
+    m_IsDead = false;
+    m_DeathTimer = 0.0f;
+}
 
 void Player::Die() {
     if (m_IsDead) {
         return;
     }
-
     LOG_INFO("Player died");
     m_IsDead = true;
     m_DeathTimer = 0.0f;

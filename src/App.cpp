@@ -25,6 +25,7 @@ void App::Start() {
 }
 
 void App::Update() {
+    bool wasDead = m_Player->IsDead();
     m_Level->Draw();    // background first
     m_Player->Update();
     m_Player->Draw();
@@ -33,6 +34,33 @@ void App::Update() {
         if (auto group = std::dynamic_pointer_cast<DisappearingPlatformGroup>(platform)) {
             group->CheckCollisionAndDisappear(m_Player);
         }
+    // 復活那瞬間
+    if (wasDead && !m_Player->IsDead()) {
+        if (m_CurrentRoomID != m_RespawnRoomID) {
+            m_CurrentRoomID = m_RespawnRoomID;
+            m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(m_CurrentRoomID) + ".json");
+            m_Player->SetTileMap(m_Level->GetTileMap());
+        }
+    }
+
+    for (const auto& checkpoint : m_Level->GetCheckPoints()) {
+        if (checkpoint->is_touched(m_Player->GetPosition())) {
+            if (!checkpoint->IsActivated()) {
+                for (const auto& cp : m_Level->GetCheckPoints()) {
+                    cp->SetActivated(false);
+                }
+                checkpoint->SetActivated(true);
+                glm::vec2 safePos;
+                safePos.x = checkpoint->GetTransform().translation.x;
+                safePos.y = m_Player->GetPosition().y;
+                m_Player->SetRespawnPos(safePos);
+                m_RespawnRoomID = m_CurrentRoomID;
+                LOG_INFO("Checkpoint Saved");
+            }
+        }
+    }
+    
+    for (const auto& platform : m_MovingPlatforms) {
         platform->Update();
         platform->Draw();
     }
@@ -57,6 +85,7 @@ void App::Update() {
     if (pos.x >= halfW) {
         if (conn.right != -1) {
             try {
+                m_CurrentRoomID = conn.right;
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.right) + ".json");
                 m_Player->SetTileMap(m_Level->GetTileMap());
                 m_Platforms = m_Level->GetPlatforms();
@@ -73,6 +102,7 @@ void App::Update() {
     else if (pos.x <= -halfW) {
         if (conn.left != -1) {
             try {
+                m_CurrentRoomID = conn.left;
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.left) + ".json");
                 m_Player->SetTileMap(m_Level->GetTileMap());
                 m_Platforms = m_Level->GetPlatforms();
@@ -89,6 +119,7 @@ void App::Update() {
     else if (pos.y >= halfH) {
         if (conn.up != -1) {
             try {
+                m_CurrentRoomID = conn.up;
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.up) + ".json");
                 m_Player->SetTileMap(m_Level->GetTileMap());
                 m_Platforms = m_Level->GetPlatforms();
@@ -105,6 +136,7 @@ void App::Update() {
     else if (pos.y <= -halfH) {
         if (conn.down != -1) {
             try {
+                m_CurrentRoomID = conn.down;
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.down) + ".json");
                 m_Player->SetTileMap(m_Level->GetTileMap());
                 m_Platforms = m_Level->GetPlatforms();

@@ -139,7 +139,7 @@
                 "Resources/Character/Enemy/enemy_21.png"
             ],
             "speed": 250.0,
-            "scale": 3.0,
+            "scale": 2.6,
             "moving_paths": [
                 {
                     "start": {"col": 47, "row": 5.4}, 
