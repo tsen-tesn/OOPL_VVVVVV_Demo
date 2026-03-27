@@ -67,10 +67,10 @@ void App::Update() {
     
     for (const auto& hazard : m_Level->GetHazards()) {
         hazard->Update();
-        // if (hazard->is_touched(m_Player->GetPosition())) {
-        //     m_Player->Die();
-        //     LOG_INFO("Player died");
-        // }
+        if (hazard->is_touched(m_Player->GetPosition())) {
+            m_Player->Die();
+            LOG_INFO("Player died");
+        }
     }
     
     
