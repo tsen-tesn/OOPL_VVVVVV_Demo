@@ -40,8 +40,6 @@ private:
     std::vector<std::shared_ptr<Platform>> m_Platforms;
     int m_CurrentRoomID = 1;
     int m_RespawnRoomID = 1;
-    std::vector<std::shared_ptr<MovingPlatform>> m_MovingPlatforms;
-    std::vector<std::shared_ptr<DisappearingPlatformGroup>> m_DisappearingPlatformGroups;
 };
 
 #endif
