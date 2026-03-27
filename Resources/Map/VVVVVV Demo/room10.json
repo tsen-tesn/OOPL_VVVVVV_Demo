@@ -142,18 +142,22 @@
             ],
             "positions": [
                 {
+                    "original": {"col": 5, "row": 20},
                     "start": {"col": 5, "row": 20},
                     "end": {"col": 33, "row": 20}
                 },
                 {
+                    "original": {"col": 6, "row": 20},
                     "start": {"col": 6, "row": 20},
                     "end": {"col": 34, "row": 20}
                 },
                 {
+                    "original": {"col": 7, "row": 20},
                     "start": {"col": 7, "row": 20},
                     "end": {"col": 35, "row": 20}
                 },
                 {
+                    "original": {"col": 8, "row": 20},
                     "start": {"col": 8, "row": 20},
                     "end": {"col": 36, "row": 20}
                 }

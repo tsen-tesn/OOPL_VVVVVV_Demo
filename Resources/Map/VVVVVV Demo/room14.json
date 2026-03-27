@@ -116,6 +116,37 @@
                     "end": {"col": 35,"row": 19}
                 }
             ]
+        },
+        {
+            "name": "MovingPlatform",
+            "image_paths": [
+                "Resources/PlatForm/platform_0.png",
+                "Resources/PlatForm/platform_0.png",
+                "Resources/PlatForm/platform_0.png",
+                "Resources/PlatForm/platform_0.png"
+            ],
+            "positions": [
+                {
+                    "original": {"col": 8, "row": 8},
+                    "start": {"col": 8, "row": 8},
+                    "end": {"col": 38, "row": 8}
+                },
+                {
+                    "original": {"col": 9, "row": 8},
+                    "start": {"col": 9, "row": 8},
+                    "end": {"col": 39, "row": 8}
+                },
+                {
+                    "original": {"col": 10, "row": 8},
+                    "start": {"col": 10, "row": 8},
+                    "end": {"col": 40, "row": 8}
+                },
+                {
+                    "original": {"col": 11, "row": 8},
+                    "start": {"col": 11, "row": 8},
+                    "end": {"col": 41, "row": 8}
+                }
+            ]
         }
     ]
 }
