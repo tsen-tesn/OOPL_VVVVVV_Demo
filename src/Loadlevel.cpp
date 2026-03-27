@@ -215,7 +215,7 @@ LoadLevel::LoadLevel(const std::string& jsonPath) {
                     }
                 }
             }
-        }
+
             // Handle CheckPoint
             else if (name == "CheckPoint") {
                 std::string imagePath;
@@ -251,5 +251,8 @@ void LoadLevel::Draw() {
     }
     for (auto& trigger : m_Trigger) {
         trigger->Draw();
+    }
+    for (auto& platform : m_Platforms) {
+        platform->Draw();
     }
 }

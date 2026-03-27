@@ -34,6 +34,8 @@ void App::Update() {
         if (auto group = std::dynamic_pointer_cast<DisappearingPlatformGroup>(platform)) {
             group->CheckCollisionAndDisappear(m_Player);
         }
+        platform->Update();
+    }
     // 復活那瞬間
     if (wasDead && !m_Player->IsDead()) {
         if (m_CurrentRoomID != m_RespawnRoomID) {
@@ -60,11 +62,6 @@ void App::Update() {
         }
     }
     
-    for (const auto& platform : m_MovingPlatforms) {
-        platform->Update();
-        platform->Draw();
-    }
-
     for (const auto& hazard : m_Level->GetHazards()) {
         hazard->Update();
         if (hazard->is_touched(m_Player->GetPosition())) {
