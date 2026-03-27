@@ -1,5 +1,7 @@
 #include "Loadlevel.hpp"
 #include "MovingEnemy.hpp"
+#include "Spike.hpp"
+#include "CheckPoint.hpp"
 #include "Util/Image.hpp"
 #include "Util/Logger.hpp"
 
@@ -127,7 +129,31 @@ LoadLevel::LoadLevel(const std::string& jsonPath) {
                     }
                 }
             }
-        }
+            // Handle CheckPoint
+            else if (name == "CheckPoint") {
+                std::string imagePath;
+                std::string type = layer.value("type", "");
+                if (type == "up") {
+                    imagePath = "Resources/Trigger/trigger_5.png";
+                } else if (type == "down") {
+                    imagePath = "Resources/Trigger/trigger_4.png";
+                }
+
+                if (imagePath.empty()) continue;
+
+                if(layer.contains("positions") && layer["positions"].is_array()) {
+                    for (const auto& pos : layer["positions"]) {
+                        float col = pos.value("col", 0.0f);
+                        float row = pos.value("row", 0.0f);
+                        glm::vec2 screenPos = m_TileMap->GridToScreen(col, row);
+                        
+                        auto checkPoint = std::make_shared<CheckPoint>(screenPos, imagePath);
+                        checkPoint->SetZIndex(5.0f);
+                        m_Trigger.push_back(checkPoint);
+                    }
+                }
+            }
+        } 
     }
 }
 
@@ -135,5 +161,8 @@ void LoadLevel::Draw() {
     m_Background.Draw();
     for (auto& hazard : m_Hazards) {
         hazard->Draw();
+    }
+    for (auto& trigger : m_Trigger) {
+        trigger->Draw();
     }
 }

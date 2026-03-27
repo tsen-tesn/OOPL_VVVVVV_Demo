@@ -9,6 +9,7 @@
 #include "Util/GameObject.hpp"
 #include "TileMap.hpp"
 #include "Spike.hpp"
+#include "CheckPoint.hpp"
 
 class LoadLevel {
 public:
@@ -22,16 +23,19 @@ public:
     explicit LoadLevel(const std::string& jsonPath);
 
     void Draw();
-
+    
     Connections GetConnections() const { return m_Connections; }
     std::shared_ptr<TileMap> GetTileMap() const { return m_TileMap; }
     const std::vector<std::shared_ptr<Hazard>>& GetHazards() const { return m_Hazards; }
+    const std::vector<std::shared_ptr<CheckPoint>>& GetCheckPoints() const { return m_Trigger; }
 
 private:
     Connections m_Connections;
     std::shared_ptr<TileMap> m_TileMap;
     Util::GameObject m_Background;
     std::vector<std::shared_ptr<Hazard>> m_Hazards;
+    std::vector<std::shared_ptr<CheckPoint>> m_Trigger;
+    CheckPoint* m_CurrentCheckPoint = nullptr;
 };
 
 #endif

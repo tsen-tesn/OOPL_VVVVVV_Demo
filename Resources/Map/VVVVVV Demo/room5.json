@@ -74,6 +74,13 @@
                     "end": {"col": 28, "row": 9}
                 }
             ]
+        },
+        {
+            "name": "CheckPoint",
+            "type": "down",
+            "positions": [
+                {"col":31, "row": 24.6}
+            ]
         }
     ]       
 }

@@ -5,6 +5,7 @@ set(SRC_FILES
     TileMap.cpp
     MovingEnemy.cpp
     Loadlevel.cpp
+    CheckPoint.cpp
     MovingPlatform.cpp
     DisappearingPlatform.cpp
     DisappearingPlatformGroup.cpp
@@ -17,6 +18,8 @@ set(INCLUDE_FILES
     TileMap.hpp
     MovingEnemy.hpp
     Loadlevel.hpp
+    Trigger.hpp
+    CheckPoint.hpp
     Platform.hpp
     MovingPlatform.hpp
     DisappearingPlatform.hpp

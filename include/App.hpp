@@ -10,6 +10,7 @@
 #include "Loadlevel.hpp"
 #include "MovingEnemy.hpp"  
 #include "TileMap.hpp"
+#include "CheckPoint.hpp"
 #include "MovingPlatform.hpp"
 #include "DisappearingPlatformGroup.hpp"
 
@@ -36,6 +37,8 @@ private:
     State m_CurrentState = State::START;
     std::shared_ptr<Player> m_Player;
     std::shared_ptr<LoadLevel> m_Level;
+    int m_CurrentRoomID = 1;
+    int m_RespawnRoomID = 1;
     std::vector<std::shared_ptr<MovingPlatform>> m_MovingPlatforms;
     std::vector<std::shared_ptr<DisappearingPlatformGroup>> m_DisappearingPlatformGroups;
 };

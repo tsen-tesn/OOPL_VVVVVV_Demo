@@ -18,8 +18,8 @@ public:
     void SetTileMap(std::shared_ptr<TileMap> tileMap);
 
     glm::vec2 GetPosition() const;
-
-
+    void SetRespawnPos(const glm::vec2& pos);
+    void Respawn();
     void Die();
     bool IsDead() const;
 
@@ -49,15 +49,17 @@ private:
     std::shared_ptr<Util::Image> m_RightUpDeathImage;
     std::shared_ptr<Util::Image> m_LeftUpDeathImage;
 
-    glm::vec2 m_Velocity = {0.0f, 0.0f};
+    glm::vec2 m_Velocity = {-100.0f, 200.0f};
     float m_Gravity = 500.0f;
-    bool m_GravityDown = true;
+    bool m_GravityDown = false;
     bool m_FacingRight = true;
 
     bool m_IsDead = false;
     float m_DeathTimer = 0.0f;
     float m_DeathDuration = 1.0f;
     float m_BlinkInterval = 0.05f;
+    glm::vec2 m_RespawnPos = {-200.0f, -150.0f};
+    bool m_RespawnGravityDown = false;
 };
 
 #endif
