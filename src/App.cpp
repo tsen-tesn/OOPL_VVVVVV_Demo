@@ -16,7 +16,7 @@ void App::Start() {
     );
 
     m_Player = std::make_shared<Player>(m_Level->GetTileMap());
-    m_Player->m_Transform.translation = {-200.0f, -100.0f};
+    m_Player->m_Transform.translation = {-200.0f, 100.0f};
     m_CurrentState = State::UPDATE;
     m_MovingPlatforms.push_back(std::make_shared<MovingPlatform>(glm::vec2(52.0f, 100.0f), glm::vec2(136.0f, 100.0f), "./Resources/PlatForm/platform_0.png", 3.0f, 100.0f));
     m_MovingPlatforms.push_back(std::make_shared<MovingPlatform>(glm::vec2(76.0f, 100.0f), glm::vec2(160.0f, 100.0f), "./Resources/PlatForm/platform_0.png", 3.0f, 100.0f));
