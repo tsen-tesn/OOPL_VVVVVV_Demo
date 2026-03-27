@@ -2,11 +2,7 @@
 #include "Util/Logger.hpp"
 #include "Util/Time.hpp"
 
-DisappearingPlatform::DisappearingPlatform(
-    const glm::vec2& Pos,
-    const std::vector<std::string>& imagePaths,
-    float scale
-) : m_Pos(Pos), m_ImagePaths(imagePaths) {
+DisappearingPlatform::DisappearingPlatform(const glm::vec2& Pos, const std::vector<std::string>& imagePaths, float scale) : m_Pos(Pos), m_ImagePaths(imagePaths) {
     m_NormalImage = std::make_shared<Util::Image>(m_ImagePaths[0]);
 
     // 假設第二個參數是是否循環，這裡應該用 false

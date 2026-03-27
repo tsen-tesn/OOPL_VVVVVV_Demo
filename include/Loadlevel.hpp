@@ -26,12 +26,14 @@ public:
     Connections GetConnections() const { return m_Connections; }
     std::shared_ptr<TileMap> GetTileMap() const { return m_TileMap; }
     const std::vector<std::shared_ptr<Hazard>>& GetHazards() const { return m_Hazards; }
+    // const std::vector<std::shared_ptr<Platform>>& GetPlatforms() const { return m_Platforms; }
 
 private:
     Connections m_Connections;
     std::shared_ptr<TileMap> m_TileMap;
     Util::GameObject m_Background;
     std::vector<std::shared_ptr<Hazard>> m_Hazards;
+    // std::vector<std::shared_ptr<Platform>> m_Platforms;
 };
 
 #endif

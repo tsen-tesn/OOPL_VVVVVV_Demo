@@ -17,7 +17,7 @@ void App::Start() {
 
     m_Player = std::make_shared<Player>(m_Level->GetTileMap());
     m_CurrentState = State::UPDATE;
-    
+
     // For TEST
     m_Platforms.push_back(std::make_shared<MovingPlatform>(glm::vec2(52.0f, 100.0f), glm::vec2(136.0f, 100.0f), "./Resources/PlatForm/platform_0.png", 3.0f, 100.0f));
     m_Platforms.push_back(std::make_shared<MovingPlatform>(glm::vec2(76.0f, 100.0f), glm::vec2(160.0f, 100.0f), "./Resources/PlatForm/platform_0.png", 3.0f, 100.0f));
@@ -37,7 +37,7 @@ void App::Start() {
         glm::vec2(172.0f, -100.0f)
     };
 
-    m_DisappearingPlatformGroups.push_back(std::make_shared<DisappearingPlatformGroup>(positions, images, 3.0f));
+    m_Platforms.push_back(std::make_shared<DisappearingPlatformGroup>(positions, images, 3.0f));
 }
 
 void App::Update() {
@@ -46,15 +46,11 @@ void App::Update() {
     m_Player->Draw();
 
     for (const auto& platform : m_Platforms) {
+        if (auto group = std::dynamic_pointer_cast<DisappearingPlatformGroup>(platform)) {
+            group->CheckCollisionAndDisappear(m_Player);
+        }
         platform->Update();
         platform->Draw();
-    }
-
-
-    for (const auto& group : m_DisappearingPlatformGroups) {
-        group->CheckCollisionAndDisappear(m_Player);
-        group->Update();
-        group->Draw();
     }
 
     for (const auto& hazard : m_Level->GetHazards()) {

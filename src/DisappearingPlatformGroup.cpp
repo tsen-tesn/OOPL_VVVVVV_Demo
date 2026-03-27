@@ -44,3 +44,23 @@ void DisappearingPlatformGroup::Draw() {
         platform->Draw();
     }
 }
+
+void DisappearingPlatformGroup::Disappear() {
+    for (auto& platform : m_Platforms) {
+        platform->Disappear();
+    }
+}
+
+bool DisappearingPlatformGroup::IsDisappeared() const {
+    for (auto& platform : m_Platforms) {
+        if (!platform->IsDisappeared()) return false;
+    }
+    return true;
+}
+
+bool DisappearingPlatformGroup::IsSolid() const {
+    for (auto& platform : m_Platforms) {
+        if (!platform->IsDisappeared() && platform->IsSolid()) return true;
+    }
+    return false;
+}
