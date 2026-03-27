@@ -186,7 +186,9 @@
                     {"col": 23, "row": 7},
                     {"col": 24, "row": 7}
                 ]
-        
+            ]
+        },
+        {
             "name": "CheckPoint",
             "type": "up",
             "positions": [
