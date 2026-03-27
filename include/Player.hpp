@@ -10,6 +10,7 @@
 #include "Util/Keycode.hpp"
 #include "Util/Time.hpp"
 #include "TileMap.hpp"
+#include "Platform.hpp"
 
 class Player : public Util::GameObject {
 public:
@@ -22,11 +23,13 @@ public:
     void Respawn();
     void Die();
     bool IsDead() const;
+    void SetPlatforms(const std::vector<std::shared_ptr<Platform>>& platforms);
 
 private:
     bool IsOnSurface() const;
     // glm::vec2 GetHalfSize() const;
     bool CanMoveTo(const glm::vec2& position) const;
+    glm::vec2 GetRidingPlatformDelta() const;
 
     void MoveX(float amount);
     void MoveY(float amount);
@@ -60,6 +63,7 @@ private:
     float m_BlinkInterval = 0.05f;
     glm::vec2 m_RespawnPos = {-200.0f, -150.0f};
     bool m_RespawnGravityDown = false;
+    std::vector<std::shared_ptr<Platform>> m_Platforms;
 };
 
 #endif

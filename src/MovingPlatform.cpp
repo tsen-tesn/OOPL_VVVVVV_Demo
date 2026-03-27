@@ -12,6 +12,7 @@ MovingPlatform::MovingPlatform(const glm::vec2& StartPos, const glm::vec2& EndPo
 
 void MovingPlatform::Update() {
     Platform::Update();
+    glm::vec2 prevPos = m_Transform.translation;
     float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
 
     glm::vec2 target = m_MovingToEnd ? m_EndPos : m_StartPos;
@@ -28,4 +29,6 @@ void MovingPlatform::Update() {
         direction /= distance;
         m_Transform.translation += direction * moveDist;
     }
+
+    m_Delta = m_Transform.translation - prevPos;
 }

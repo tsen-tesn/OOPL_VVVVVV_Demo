@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include "DisappearingPlatformGroup.hpp"
 #include "Util/Logger.hpp"
 
 #include <memory>
@@ -140,7 +141,11 @@ void Player::Update() {
         m_Velocity.y = 0.0f;
     }
 
-
+    // 如果站在移動平台上，跟著平台移動
+    glm::vec2 ridingDelta = GetRidingPlatformDelta();
+    if (ridingDelta.x != 0.0f || ridingDelta.y != 0.0f) {
+        m_Transform.translation += ridingDelta;
+    }
 
     bool isMoving = (m_Velocity.x != 0.0f);
 
@@ -220,6 +225,57 @@ bool Player::IsDead() const {
     return m_IsDead;
 }
 
+void Player::SetPlatforms(const std::vector<std::shared_ptr<Platform>>& platforms) {
+    m_Platforms.clear();
+    for (const auto& p : platforms) {
+        auto group = std::dynamic_pointer_cast<DisappearingPlatformGroup>(p);
+        if (group) {
+            for (const auto& sub : group->GetPlatforms()) {
+                m_Platforms.push_back(sub);
+            }
+        } else {
+            m_Platforms.push_back(p);
+        }
+    }
+}
+
+glm::vec2 Player::GetRidingPlatformDelta() const {
+    const float halfWidth  = 24.0f * 3.0f / 2.0f;
+    const float halfHeight = 24.0f * 3.0f / 2.0f;
+    const float shrinkLeft   = 21.0f;
+    const float shrinkRight  = 20.0f;
+    const float shrinkTop    = 5.0f;
+    const float shrinkBottom = 9.0f;
+    const float probeOffset  = 10.0f;
+
+    const float playerLeft  = m_Transform.translation.x - halfWidth  + shrinkLeft;
+    const float playerRight = m_Transform.translation.x + halfWidth  - shrinkRight;
+
+    for (const auto& platform : m_Platforms) {
+        if (!platform || !platform->IsSolid()) continue;
+        glm::vec2 pPos  = platform->GetPosition();
+        glm::vec2 pHalf = platform->GetHalfSize();
+        float platL = pPos.x - pHalf.x;
+        float platR = pPos.x + pHalf.x;
+        float platT = pPos.y - pHalf.y;
+        float platB = pPos.y + pHalf.y;
+
+        if (playerRight <= platL || playerLeft >= platR) continue;
+
+        if (m_GravityDown) {
+            float feetY = m_Transform.translation.y + halfHeight - shrinkBottom + probeOffset;
+            if (feetY >= platT && feetY <= platB)
+                return platform->GetDelta();
+        } else {
+            float headY = m_Transform.translation.y - halfHeight + shrinkTop - probeOffset;
+            if (headY <= platB && headY >= platT)
+                return platform->GetDelta();
+        }
+    }
+    return {0.0f, 0.0f};
+}
+
+
 bool Player::CanMoveTo(const glm::vec2& position) const {
     if (!m_TileMap) {
         return true;
@@ -270,10 +326,33 @@ bool Player::CanMoveTo(const glm::vec2& position) const {
         return m_TileMap->GetTileType(gridPos.x, gridPos.y) == TileMap::TileType::Path;
     };
 
-    return canPassPoint(topLeft) &&
-           canPassPoint(topRight) &&
-           canPassPoint(bottomLeft) &&
-           canPassPoint(bottomRight);
+    if (!canPassPoint(topLeft) || !canPassPoint(topRight) ||
+        !canPassPoint(bottomLeft) || !canPassPoint(bottomRight)) {
+        return false;
+    }
+
+    // Platform AABB check
+    // Player rect (already shrunk)
+    float pLeft   = position.x - halfWidth  + shrinkLeft;
+    float pRight  = position.x + halfWidth  - shrinkRight;
+    float pBottom = position.y + halfHeight - shrinkBottom;
+    float pTop    = position.y - halfHeight + shrinkTop;
+
+    for (const auto& platform : m_Platforms) {
+        if (!platform || !platform->IsSolid()) continue;
+        glm::vec2 pPos  = platform->GetPosition();
+        glm::vec2 pHalf = platform->GetHalfSize();
+        float platL = pPos.x - pHalf.x;
+        float platR = pPos.x + pHalf.x;
+        float platB = pPos.y + pHalf.y;
+        float platT = pPos.y - pHalf.y;
+        // AABB overlap
+        if (pRight > platL && pLeft < platR &&
+            pBottom > platT && pTop < platB) {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool Player::IsOnSurface() const {
@@ -332,7 +411,37 @@ bool Player::IsOnSurface() const {
         return m_TileMap->GetTileType(gridPos.x, gridPos.y) == TileMap::TileType::Wall;
     };
 
-    return isWallPoint(leftPoint) || isWallPoint(rightPoint);
+    if (isWallPoint(leftPoint) || isWallPoint(rightPoint)) {
+        return true;
+    }
+
+    // Platform surface check
+    const float playerLeft  = m_Transform.translation.x - halfWidth  + shrinkLeft;
+    const float playerRight = m_Transform.translation.x + halfWidth  - shrinkRight;
+
+    for (const auto& platform : m_Platforms) {
+        if (!platform || !platform->IsSolid()) continue;
+        glm::vec2 pPos  = platform->GetPosition();
+        glm::vec2 pHalf = platform->GetHalfSize();
+        float platL = pPos.x - pHalf.x;
+        float platR = pPos.x + pHalf.x;
+        float platT = pPos.y - pHalf.y;
+        float platB = pPos.y + pHalf.y;
+
+        // Horizontal overlap
+        if (playerRight <= platL || playerLeft >= platR) continue;
+
+        if (m_GravityDown) {
+            // Player feet probe point (bottom edge + probeOffset)
+            float feetY = m_Transform.translation.y + halfHeight - shrinkBottom + probeOffset;
+            if (feetY >= platT && feetY <= platB) return true;
+        } else {
+            // Player head probe point (top edge - probeOffset)
+            float headY = m_Transform.translation.y - halfHeight + shrinkTop - probeOffset;
+            if (headY <= platB && headY >= platT) return true;
+        }
+    }
+    return false;
 }
 
 void Player::MoveX(float amount) {

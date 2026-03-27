@@ -17,6 +17,7 @@ void App::Start() {
         );
         m_Player = std::make_shared<Player>(m_Level->GetTileMap());
         m_Platforms = m_Level->GetPlatforms();
+        m_Player->SetPlatforms(m_Platforms);
         m_CurrentState = State::UPDATE;
     } catch (const std::exception& e) {
         LOG_ERROR("App::Start failed to load level: {}", e.what());
@@ -36,6 +37,8 @@ void App::Update() {
         }
         platform->Update();
     }
+    // 平台位置每幀都可能變動（MovingPlatform），更新給 Player
+    m_Player->SetPlatforms(m_Platforms);
     // 復活那瞬間
     if (wasDead && !m_Player->IsDead()) {
         if (m_CurrentRoomID != m_RespawnRoomID) {
@@ -86,6 +89,7 @@ void App::Update() {
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.right) + ".json");
                 m_Player->SetTileMap(m_Level->GetTileMap());
                 m_Platforms = m_Level->GetPlatforms();
+                m_Player->SetPlatforms(m_Platforms);
                 pos.x = -halfW + 10.0f; // wrap to left side
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load right connection: {}", e.what());
@@ -103,6 +107,7 @@ void App::Update() {
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.left) + ".json");
                 m_Player->SetTileMap(m_Level->GetTileMap());
                 m_Platforms = m_Level->GetPlatforms();
+                m_Player->SetPlatforms(m_Platforms);
                 pos.x = halfW - 10.0f; // wrap to right side
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load left connection: {}", e.what());
@@ -120,6 +125,7 @@ void App::Update() {
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.up) + ".json");
                 m_Player->SetTileMap(m_Level->GetTileMap());
                 m_Platforms = m_Level->GetPlatforms();
+                m_Player->SetPlatforms(m_Platforms);
                 pos.y = -halfH + 10.0f; // wrap to bottom
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load up connection: {}", e.what());
@@ -137,6 +143,7 @@ void App::Update() {
                 m_Level = std::make_shared<LoadLevel>(RESOURCE_DIR "/Map/VVVVVV Demo/room" + std::to_string(conn.down) + ".json");
                 m_Player->SetTileMap(m_Level->GetTileMap());
                 m_Platforms = m_Level->GetPlatforms();
+                m_Player->SetPlatforms(m_Platforms);
                 pos.y = halfH - 10.0f; // wrap to top
             } catch(const std::exception& e) {
                 LOG_ERROR("Failed to load down connection: {}", e.what());

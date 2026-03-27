@@ -20,6 +20,10 @@ public:
     virtual void Disappear() {}
 
     virtual bool IsDisappeared() const { return false; }
+
+    virtual glm::vec2 GetHalfSize() const { return {36.0f, 12.0f}; }
+
+    virtual glm::vec2 GetDelta() const { return {0.0f, 0.0f}; }
 };
 
 #endif // PLATFORM_HPP
