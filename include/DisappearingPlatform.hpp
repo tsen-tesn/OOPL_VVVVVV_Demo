@@ -17,10 +17,10 @@ public:
     DisappearingPlatform(const glm::vec2& Pos, const std::vector<std::string>& imagePaths, float scale = 3.0f);
 
     void Update() override;
-    void Disappear();
-    bool IsDisappeared() const { return m_State == State::DISAPPEARED; }
+    void Disappear() override;
+    bool IsDisappeared() const override { return m_State == State::DISAPPEARED; }
     bool IsSolid() const override;
-    glm::vec2 GetPosition() const { return m_Transform.translation; }
+    glm::vec2 GetPosition() const override { return m_Transform.translation; }
 
 private:
     State m_State = State::NORMAL;
