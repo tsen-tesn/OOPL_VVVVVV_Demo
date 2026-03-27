@@ -36,7 +36,7 @@ private:
     State m_CurrentState = State::START;
     std::shared_ptr<Player> m_Player;
     std::shared_ptr<LoadLevel> m_Level;
-    std::vector<std::shared_ptr<MovingPlatform>> m_MovingPlatforms;
+    std::vector<std::shared_ptr<Platform>> m_Platforms;
     std::vector<std::shared_ptr<DisappearingPlatformGroup>> m_DisappearingPlatformGroups;
 };
 
