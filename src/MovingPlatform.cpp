@@ -2,10 +2,10 @@
 #include "Util/Logger.hpp"
 #include "Util/Time.hpp"
 
-MovingPlatform::MovingPlatform(const glm::vec2& StartPos, const glm::vec2& EndPos, const std::string& imagePath, float scale, float speed) : m_StartPos(StartPos), m_EndPos(EndPos), m_Speed(speed) {
+MovingPlatform::MovingPlatform(const glm::vec2& OriginalPos, const glm::vec2& StartPos, const glm::vec2& EndPos, const std::string& imagePath, float scale, float speed) : m_StartPos(StartPos), m_EndPos(EndPos), m_OriginalPos(OriginalPos), m_Speed(speed) {
     m_Drawable = std::make_shared<Util::Image>(imagePath);
     
-    m_Transform.translation = StartPos;
+    m_Transform.translation = OriginalPos;
     m_Transform.scale = {scale, scale};
     // LOG_INFO("MovingPlatform created");
 }

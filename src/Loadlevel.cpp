@@ -196,21 +196,25 @@ LoadLevel::LoadLevel(const std::string& jsonPath) {
                     size_t numPlatforms = std::min(imagePaths.size(), positionsArray.size());
                     for (size_t i = 0; i < numPlatforms; ++i) {
                         const auto& pos = positionsArray[i];
-                        if (!pos.is_object() || !pos.contains("start") || !pos.contains("end")) continue;
+                        if (!pos.is_object() || !pos.contains("original") || !pos.contains("start") || !pos.contains("end")) continue;
                         
+                        const auto& original = pos["original"];
                         const auto& start = pos["start"];
                         const auto& end = pos["end"];
-                        if (!start.is_object() || !end.is_object()) continue;
+                        if (!original.is_object() || !start.is_object() || !end.is_object()) continue;
                         
+                        float originalCol = original.value("col", 0.0f);
+                        float originalRow = original.value("row", 0.0f);
                         float startCol = start.value("col", 0.0f);
                         float startRow = start.value("row", 0.0f);
                         float endCol = end.value("col", 0.0f);
                         float endRow = end.value("row", 0.0f);
                         
+                        glm::vec2 originalPos = m_TileMap->GridToScreen(originalCol, originalRow);
                         glm::vec2 startPos = m_TileMap->GridToScreen(startCol, startRow);
                         glm::vec2 endPos = m_TileMap->GridToScreen(endCol, endRow);
                         
-                        auto platform = std::make_shared<MovingPlatform>(startPos, endPos, imagePaths[i], scaleValue, speedValue);
+                        auto platform = std::make_shared<MovingPlatform>(originalPos, startPos, endPos, imagePaths[i], scaleValue, speedValue);
                         m_Platforms.push_back(platform);
                     }
                 }

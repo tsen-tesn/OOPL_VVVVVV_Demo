@@ -119,27 +119,93 @@
         {
             "name": "MovingPlatform",
             "image_paths": [
-                "Resources/PlatForm/platform_0.png",
-                "Resources/PlatForm/platform_0.png",
-                "Resources/PlatForm/platform_0.png",
-                "Resources/PlatForm/platform_0.png"
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png"
             ],
             "positions": [
                 {
-                    "start": {"col": 16, "row": 9},
-                    "end": {"col": 16, "row": 20}
-                },
-                {
+                    "original": {"col": 17, "row": 9},
                     "start": {"col": 17, "row": 9},
                     "end": {"col": 17, "row": 20}
                 },
                 {
+                    "original": {"col": 18, "row": 9},
                     "start": {"col": 18, "row": 9},
                     "end": {"col": 18, "row": 20}
                 },
                 {
+                    "original": {"col": 19, "row": 9},
                     "start": {"col": 19, "row": 9},
                     "end": {"col": 19, "row": 20}
+                },
+                {
+                    "original": {"col": 20, "row": 9},
+                    "start": {"col": 20, "row": 9},
+                    "end": {"col": 20, "row": 20}
+                }
+            ]
+        },
+        {
+            "name": "MovingPlatform",
+            "image_paths": [
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png"
+            ],
+            "positions": [
+                {
+                    "original": {"col": 25, "row": 15},
+                    "start": {"col": 25, "row": 9},
+                    "end": {"col": 25, "row": 20}
+                },
+                {
+                    "original": {"col": 26, "row": 15},
+                    "start": {"col": 26, "row": 9},
+                    "end": {"col": 26, "row": 20}
+                },
+                {
+                    "original": {"col": 27, "row": 15},
+                    "start": {"col": 27, "row": 9},
+                    "end": {"col": 27, "row": 20}
+                },
+                {
+                    "original": {"col": 28, "row": 15},
+                    "start": {"col": 28, "row": 9},
+                    "end": {"col": 28, "row": 20}
+                }
+            ]
+        },
+        {
+            "name": "MovingPlatform",
+            "image_paths": [
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png"
+            ],
+            "positions": [
+                {
+                    "original": {"col": 33, "row": 20},
+                    "start": {"col": 33, "row": 9},
+                    "end": {"col": 33, "row": 20}
+                },
+                {
+                    "original": {"col": 34, "row": 20},
+                    "start": {"col": 34, "row": 9},
+                    "end": {"col": 34, "row": 20}
+                },
+                {
+                    "original": {"col": 35, "row": 20},
+                    "start": {"col": 35, "row": 9},
+                    "end": {"col": 35, "row": 20}
+                },
+                {
+                    "original": {"col": 36, "row": 20},
+                    "start": {"col": 36, "row": 9},
+                    "end": {"col": 36, "row": 20}
                 }
             ]
         },
