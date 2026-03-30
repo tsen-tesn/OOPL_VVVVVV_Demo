@@ -119,10 +119,10 @@
         {
             "name": "MovingPlatform",
             "image_paths": [
-                "Resources/PlatForm/platform_0.png",
-                "Resources/PlatForm/platform_0.png",
-                "Resources/PlatForm/platform_0.png",
-                "Resources/PlatForm/platform_0.png"
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png"
             ],
             "positions": [
                 {
@@ -150,10 +150,10 @@
         {
             "name": "MovingPlatform",
             "image_paths": [
-                "Resources/PlatForm/platform_0.png",
-                "Resources/PlatForm/platform_0.png",
-                "Resources/PlatForm/platform_0.png",
-                "Resources/PlatForm/platform_0.png"
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png"
             ],
             "positions": [
                 {
@@ -181,10 +181,10 @@
         {
             "name": "MovingPlatform",
             "image_paths": [
-                "Resources/PlatForm/platform_0.png",
-                "Resources/PlatForm/platform_0.png",
-                "Resources/PlatForm/platform_0.png",
-                "Resources/PlatForm/platform_0.png"
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png",
+                "Resources/PlatForm/platform_13.png"
             ],
             "positions": [
                 {
