@@ -94,6 +94,29 @@
                 {"col": 43, "row": 17},
                 {"col": 44, "row": 17}
             ]
+        },
+        {
+            "name": "DisappearingPlatformGroup",
+            "image_paths":[
+                "Resources/PlatForm/platform_0.png",
+                "Resources/PlatForm/platform_1.png",
+                "Resources/PlatForm/platform_2.png",
+                "Resources/PlatForm/platform_3.png"
+            ],
+            "positions": [
+                [
+                    {"col": 21, "row": 6},
+                    {"col": 22, "row": 6},
+                    {"col": 23, "row": 6},
+                    {"col": 24, "row": 6}
+                ],
+                [
+                    {"col": 27, "row": 15},
+                    {"col": 28, "row": 15},
+                    {"col": 29, "row": 15},
+                    {"col": 30, "row": 15}
+                ]
+            ]
         }
     ]
 }
