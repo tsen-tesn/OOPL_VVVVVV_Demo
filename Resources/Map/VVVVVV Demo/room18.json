@@ -98,10 +98,10 @@
         {
             "name": "DisappearingPlatformGroup",
             "image_paths":[
-                "Resources/PlatForm/platform_0.png",
-                "Resources/PlatForm/platform_1.png",
-                "Resources/PlatForm/platform_2.png",
-                "Resources/PlatForm/platform_3.png"
+                "Resources/PlatForm/platform_4.png",
+                "Resources/PlatForm/platform_5.png",
+                "Resources/PlatForm/platform_6.png",
+                "Resources/PlatForm/platform_7.png"
             ],
             "positions": [
                 [

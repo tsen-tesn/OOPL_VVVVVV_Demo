@@ -13,7 +13,7 @@ void App::Start() {
     
     try {
         m_Level = std::make_shared<LoadLevel>(
-            RESOURCE_DIR "/Map/VVVVVV Demo/room13.json"
+            RESOURCE_DIR "/Map/VVVVVV Demo/room22.json"
         );
         m_Player = std::make_shared<Player>(m_Level->GetTileMap());
         m_Platforms = m_Level->GetPlatforms();
@@ -67,10 +67,10 @@ void App::Update() {
     
     for (const auto& hazard : m_Level->GetHazards()) {
         hazard->Update();
-        // if (hazard->is_touched(m_Player->GetPosition())) {
-        //     m_Player->Die();
-        //     LOG_INFO("Player died");
-        // }
+        if (hazard->is_touched(m_Player->GetPosition())) {
+            m_Player->Die();
+            LOG_INFO("Player died");
+        }
     }
     
     
