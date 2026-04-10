@@ -46,6 +46,7 @@ Player::Player(std::shared_ptr<TileMap> tileMap)
 
 void Player::Update() {
     float deltaTime = Util::Time::GetDeltaTimeMs() / 1000.0f;
+    if (deltaTime > 0.05f) deltaTime = 0.05f;
 
     if (m_IsDead) {
         m_DeathTimer += deltaTime;

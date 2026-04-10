@@ -52,7 +52,7 @@ private:
     std::shared_ptr<Util::Image> m_RightUpDeathImage;
     std::shared_ptr<Util::Image> m_LeftUpDeathImage;
 
-    glm::vec2 m_Velocity = {-100.0f, 200.0f};
+    glm::vec2 m_Velocity = {0.0f, 0.0f};
     float m_Gravity = 500.0f;
     bool m_GravityDown = false;
     bool m_FacingRight = true;
