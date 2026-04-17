@@ -9,8 +9,8 @@
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Time.hpp"
-#include "TileMap.hpp"
-#include "Platform.hpp"
+#include "Entity/TileMap.hpp"
+#include "Entity/Platform/Platform.hpp"
 
 class Player : public Util::GameObject {
 public:

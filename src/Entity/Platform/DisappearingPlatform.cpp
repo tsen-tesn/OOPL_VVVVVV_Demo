@@ -1,4 +1,4 @@
-#include "DisappearingPlatform.hpp"
+#include "Entity/Platform/DisappearingPlatform.hpp"
 #include "Util/Logger.hpp"
 #include "Util/Time.hpp"
 

@@ -4,15 +4,15 @@
 #include <vector>
 
 #include "pch.hpp" // IWYU pragma: export
-#include "Player.hpp"
-#include "Hazard.hpp"
-#include "Spike.hpp"
-#include "Loadlevel.hpp"
-#include "MovingEnemy.hpp"  
-#include "TileMap.hpp"
-#include "CheckPoint.hpp"
-#include "MovingPlatform.hpp"
-#include "DisappearingPlatformGroup.hpp"
+#include "Entity/Player.hpp"
+#include "Entity/Hazard/Hazard.hpp"
+#include "Entity/Hazard/Spike.hpp"
+#include "Manager/Loadlevel.hpp"
+#include "Entity/Hazard/MovingEnemy.hpp"  
+#include "Entity/TileMap.hpp"
+#include "Entity/Trigger/CheckPoint.hpp"
+#include "Entity/Platform/MovingPlatform.hpp"
+#include "Entity/Platform/DisappearingPlatformGroup.hpp"
 
 class App {
 public:

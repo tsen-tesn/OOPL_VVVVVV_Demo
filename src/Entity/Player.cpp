@@ -1,5 +1,5 @@
-#include "Player.hpp"
-#include "DisappearingPlatformGroup.hpp"
+#include "Entity/Player.hpp"
+#include "Entity/Platform/DisappearingPlatformGroup.hpp"
 #include "Util/Logger.hpp"
 
 #include <memory>

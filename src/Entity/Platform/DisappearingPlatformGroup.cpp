@@ -1,4 +1,4 @@
-#include "DisappearingPlatformGroup.hpp"
+#include "Entity/Platform/DisappearingPlatformGroup.hpp"
 #include "Util/Logger.hpp"
 
 DisappearingPlatformGroup::DisappearingPlatformGroup(const std::vector<glm::vec2>& positions, const std::vector<std::string>& imagePaths, float scale) {

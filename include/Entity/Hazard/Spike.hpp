@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "Hazard.hpp"
+#include "Entity/Hazard/Hazard.hpp"
 #include "Util/GameObject.hpp"
 
 class Spike : public Hazard {

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "Hazard.hpp"
+#include "Entity/Hazard/Hazard.hpp"
 #include "Util/Animation.hpp"
 
 class MovingEnemy : public Hazard {

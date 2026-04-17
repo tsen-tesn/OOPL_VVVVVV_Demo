@@ -7,10 +7,10 @@
 #include <vector>
 
 #include "Util/GameObject.hpp"
-#include "TileMap.hpp"
-#include "Spike.hpp"
-#include "Platform.hpp"
-#include "CheckPoint.hpp"
+#include "Entity/TileMap.hpp"
+#include "Entity/Hazard/Spike.hpp"
+#include "Entity/Platform/Platform.hpp"
+#include "Entity/Trigger/CheckPoint.hpp"
 
 class LoadLevel {
 public:

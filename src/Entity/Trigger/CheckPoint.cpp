@@ -1,4 +1,4 @@
-#include "CheckPoint.hpp"
+#include "Entity/Trigger/CheckPoint.hpp"
 
 CheckPoint::CheckPoint(const glm::vec2& position, const std::string& imagePath) {
     m_Transform.translation = position;

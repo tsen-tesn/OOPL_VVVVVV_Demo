@@ -1,7 +1,7 @@
 #ifndef DISAPPEARINGPLATFORM_HPP
 #define DISAPPEARINGPLATFORM_HPP
 
-#include "Platform.hpp"
+#include "Entity/Platform/Platform.hpp"
 #include "Util/Image.hpp"
 #include "Util/Animation.hpp"
 #include <memory>

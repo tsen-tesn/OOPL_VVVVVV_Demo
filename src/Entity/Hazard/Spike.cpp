@@ -1,6 +1,6 @@
 #include <cmath>
 
-#include "Spike.hpp"
+#include "Entity/Hazard/Spike.hpp"
 #include "Util/Image.hpp"
 
 Spike::Spike(const glm::vec2& position, const std::string& imagePath) {
