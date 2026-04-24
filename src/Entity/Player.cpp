@@ -91,7 +91,14 @@ void Player::Update() {
         return;
     }
 
+    // 如果站在移動平台上，跟著平台移動
+    glm::vec2 ridingDelta = GetRidingPlatformDelta();
+    if (ridingDelta.x != 0.0f || ridingDelta.y != 0.0f) {
+        m_Transform.translation += ridingDelta;
+    }
+
     float moveSpeed = 400.0f;
+
 
     // 左右移動
     m_Velocity.x = 0.0f;
@@ -142,11 +149,7 @@ void Player::Update() {
         m_Velocity.y = 0.0f;
     }
 
-    // 如果站在移動平台上，跟著平台移動
-    glm::vec2 ridingDelta = GetRidingPlatformDelta();
-    if (ridingDelta.x != 0.0f || ridingDelta.y != 0.0f) {
-        m_Transform.translation += ridingDelta;
-    }
+
 
     bool isMoving = (m_Velocity.x != 0.0f);
 

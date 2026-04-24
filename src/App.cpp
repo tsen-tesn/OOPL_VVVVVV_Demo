@@ -27,10 +27,6 @@ void App::Start() {
 
 void App::Update() {
     bool wasDead = m_Player->IsDead();
-    m_Level->Draw();    // background first
-    m_Player->Update();
-    m_Player->Draw();
-
     for (const auto& platform : m_Platforms) {
         if (auto group = std::dynamic_pointer_cast<DisappearingPlatformGroup>(platform)) {
             group->CheckCollisionAndDisappear(m_Player);
@@ -39,6 +35,11 @@ void App::Update() {
     }
     // 平台位置每幀都可能變動（MovingPlatform），更新給 Player
     m_Player->SetPlatforms(m_Platforms);
+
+    m_Player->Update();
+    m_Level->Draw();
+    m_Player->Draw();
+
     // 復活那瞬間
     if (wasDead && !m_Player->IsDead()) {
         if (m_CurrentRoomID != m_RespawnRoomID) {
