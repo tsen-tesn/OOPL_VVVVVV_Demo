@@ -1,4 +1,4 @@
-#include "MovingEnemy.hpp"
+#include "Entity/Hazard/MovingEnemy.hpp"
 
 #include <cmath>
 #include <memory>

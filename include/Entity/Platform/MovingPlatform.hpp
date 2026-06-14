@@ -1,7 +1,7 @@
 #ifndef MOVINGPLATFORM_HPP
 #define MOVINGPLATFORM_HPP
 
-#include "Platform.hpp"
+#include "Entity/Platform/Platform.hpp"
 #include "Util/Image.hpp"
 #include <memory>
 

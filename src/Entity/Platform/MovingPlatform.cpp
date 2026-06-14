@@ -1,4 +1,4 @@
-#include "MovingPlatform.hpp"
+#include "Entity/Platform/MovingPlatform.hpp"
 #include "Util/Logger.hpp"
 #include "Util/Time.hpp"
 

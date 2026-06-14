@@ -3,7 +3,7 @@
 
 #include <string>
 #include "Util/Image.hpp"
-#include "Trigger.hpp"
+#include "Entity/Trigger/Trigger.hpp"
 
 class CheckPoint : public Trigger {
 public:

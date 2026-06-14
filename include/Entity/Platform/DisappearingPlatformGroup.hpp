@@ -1,8 +1,8 @@
 #ifndef DISAPPEARINGPLATFORMGROUP_HPP
 #define DISAPPEARINGPLATFORMGROUP_HPP
 
-#include "DisappearingPlatform.hpp"
-#include "Player.hpp"
+#include "Entity/Platform/DisappearingPlatform.hpp"
+#include "Entity/Player.hpp"
 #include <memory>
 #include <vector>
 
