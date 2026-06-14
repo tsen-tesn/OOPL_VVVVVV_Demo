@@ -6,7 +6,7 @@ CheckPoint::CheckPoint(const glm::vec2& position, const std::string& imagePath) 
     m_Transform.scale = {3.2f, 3.2f};
 }
 
-bool CheckPoint::is_touched(const glm::vec2& playerPos) const {
+bool CheckPoint::IsTouched(const glm::vec2& playerPos) const {
     glm::vec2 checkpointPos = m_Transform.translation;
 
     float playerHalfSize = 16.0f;

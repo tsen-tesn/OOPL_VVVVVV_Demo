@@ -7,8 +7,8 @@
 class Trigger : public Util::GameObject {
 public:
     virtual ~Trigger() = default;
-    virtual bool is_touched(const glm::vec2 &playerPos) const = 0;
-    virtual void Update() {};
+    virtual bool IsTouched(const glm::vec2& playerPos) const = 0;
+    virtual void Update() {}
 };
 
 #endif

@@ -8,7 +8,7 @@
 class CheckPoint : public Trigger {
 public:
     CheckPoint(const glm::vec2& position, const std::string& imagePath);
-    bool is_touched(const glm::vec2 &playerPos) const override;
+    bool IsTouched(const glm::vec2& playerPos) const override;
     void SetActivated(bool activated);
     bool IsActivated() const { return m_isActivated; }
 
