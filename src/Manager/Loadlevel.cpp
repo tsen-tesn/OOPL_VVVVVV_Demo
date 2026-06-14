@@ -240,7 +240,7 @@ LoadLevel::LoadLevel(const std::string& jsonPath) {
                         
                         auto checkPoint = std::make_shared<CheckPoint>(screenPos, imagePath);
                         checkPoint->SetZIndex(5.0f);
-                        m_Trigger.push_back(checkPoint);
+                        m_CheckPoints.push_back(checkPoint);
                     }
                 }
             }
@@ -253,7 +253,7 @@ void LoadLevel::Draw() {
     for (auto& hazard : m_Hazards) {
         hazard->Draw();
     }
-    for (auto& trigger : m_Trigger) {
+    for (auto& trigger : m_CheckPoints) {
         trigger->Draw();
     }
     for (auto& platform : m_Platforms) {

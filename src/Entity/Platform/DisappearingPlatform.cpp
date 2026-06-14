@@ -2,7 +2,7 @@
 #include "Util/Logger.hpp"
 #include "Util/Time.hpp"
 
-DisappearingPlatform::DisappearingPlatform(const glm::vec2& Pos, const std::vector<std::string>& imagePaths, float scale) : m_Pos(Pos), m_ImagePaths(imagePaths) {
+DisappearingPlatform::DisappearingPlatform(const glm::vec2& Pos, const std::vector<std::string>& imagePaths, float scale) : m_ImagePaths(imagePaths), m_Pos(Pos) {
     m_NormalImage = std::make_shared<Util::Image>(m_ImagePaths[0]);
 
     // 假設第二個參數是是否循環，這裡應該用 false
@@ -49,10 +49,9 @@ void DisappearingPlatform::Disappear() {
     if (m_State == State::NORMAL) {
         m_State = State::ANIMATING;
         m_AnimationTimer = 0.0f;
-
-        // 重新建立動畫，讓它從第一幀開始
+        // loop=true 確保動畫持續播放直到 m_AnimationTimer >= m_AnimationDuration
+        // 若 loop=false，動畫播完後進入 ENDED 狀態，畫面會變空白
         m_DisappearAnimation = std::make_shared<Util::Animation>(m_ImagePaths, true, 200, true);
-
         LOG_INFO("DisappearingPlatform started disappearing animation");
     }
 }

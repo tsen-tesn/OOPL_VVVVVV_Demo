@@ -1,30 +1,33 @@
 set(SRC_FILES
     App.cpp
     Entity/Player.cpp
-    Entity/Hazard/Spike.cpp
     Entity/TileMap.cpp
+    Entity/Hazard/Spike.cpp
     Entity/Hazard/MovingEnemy.cpp
-    Manager/Loadlevel.cpp
-    Entity/Trigger/CheckPoint.cpp
-    Entity/Platform/MovingPlatform.cpp
     Entity/Platform/DisappearingPlatform.cpp
     Entity/Platform/DisappearingPlatformGroup.cpp
+    Entity/Platform/MovingPlatform.cpp
+    Entity/Trigger/CheckPoint.cpp
+    Scene/GameScene.cpp
+    Manager/Loadlevel.cpp
 )
 
 set(INCLUDE_FILES
     App.hpp
     Entity/Player.hpp
+    Entity/TileMap.hpp
     Entity/Hazard/Hazard.hpp
     Entity/Hazard/Spike.hpp
-    Entity/TileMap.hpp
     Entity/Hazard/MovingEnemy.hpp
-    Manager/Loadlevel.hpp
-    Entity/Trigger/Trigger.hpp
-    Entity/Trigger/CheckPoint.hpp
     Entity/Platform/Platform.hpp
     Entity/Platform/MovingPlatform.hpp
     Entity/Platform/DisappearingPlatform.hpp
     Entity/Platform/DisappearingPlatformGroup.hpp
+    Entity/Trigger/Trigger.hpp
+    Entity/Trigger/CheckPoint.hpp
+    Manager/Loadlevel.hpp
+    Scene/IScene.hpp
+    Scene/GameScene.hpp
 )
 
 set(TEST_FILES

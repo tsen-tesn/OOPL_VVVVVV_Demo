@@ -29,7 +29,7 @@ public:
     std::shared_ptr<TileMap> GetTileMap() const { return m_TileMap; }
     const std::vector<std::shared_ptr<Hazard>>& GetHazards() const { return m_Hazards; }
     const std::vector<std::shared_ptr<Platform>>& GetPlatforms() const { return m_Platforms; }
-    const std::vector<std::shared_ptr<CheckPoint>>& GetCheckPoints() const { return m_Trigger; }
+    const std::vector<std::shared_ptr<CheckPoint>>& GetCheckPoints() const { return m_CheckPoints; }
 
 private:
     Connections m_Connections;
@@ -37,8 +37,7 @@ private:
     Util::GameObject m_Background;
     std::vector<std::shared_ptr<Hazard>> m_Hazards;
     std::vector<std::shared_ptr<Platform>> m_Platforms;
-    std::vector<std::shared_ptr<CheckPoint>> m_Trigger;
-    CheckPoint* m_CurrentCheckPoint = nullptr;
+    std::vector<std::shared_ptr<CheckPoint>> m_CheckPoints;
 };
 
 #endif

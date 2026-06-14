@@ -1,6 +1,4 @@
-#include <cmath>
-
-#include "Entity/Hazard/Spike.hpp"
+#include "Spike.hpp"
 #include "Util/Image.hpp"
 
 Spike::Spike(const glm::vec2& position, const std::string& imagePath) {
@@ -9,11 +7,11 @@ Spike::Spike(const glm::vec2& position, const std::string& imagePath) {
     m_Transform.scale = {3.0f, 3.0f};
 }
 
-bool Spike::is_touched(const glm::vec2 &playerPos) const {
+bool Spike::is_touched(const glm::vec2& playerPos) const {
     glm::vec2 spikePos = m_Transform.translation;
 
     float playerHalfSize = 12.0f * 3.0f;  // 玩家半寬（自己調）
-    float spikeHalfSize  = 2.0f * 3.0f ;  // Spike 半寬（自己調）
+    float spikeHalfSize  = 2.0f  * 3.0f;  // Spike 半寬（自己調）
 
     float playerLeft   = playerPos.x - playerHalfSize;
     float playerRight  = playerPos.x + playerHalfSize;
@@ -25,8 +23,8 @@ bool Spike::is_touched(const glm::vec2 &playerPos) const {
     float spikeTop    = spikePos.y - spikeHalfSize;
     float spikeBottom = spikePos.y + spikeHalfSize;
 
-    return (playerRight  > spikeLeft &&
+    return (playerRight  > spikeLeft  &&
             playerLeft   < spikeRight &&
-            playerBottom > spikeTop &&
+            playerBottom > spikeTop   &&
             playerTop    < spikeBottom);
 }
