@@ -43,12 +43,13 @@ void GameScene::Update() {
 
     const bool wasDead = m_Player->IsDead();
 
+    UpdatePlatforms();
+
     // 繪製（背景在前）
     m_Level->Draw();
     m_Player->Update();
     m_Player->Draw();
 
-    UpdatePlatforms();
     HandleRespawn(wasDead);
     HandleCheckPoints();
     HandleHazards();

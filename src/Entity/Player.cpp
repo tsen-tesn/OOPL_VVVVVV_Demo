@@ -70,9 +70,9 @@ void Player::Update() {
         return;
     }
 
+    ApplyPlatformRiding();
     HandleInput();
     ApplyPhysics(dt);
-    ApplyPlatformRiding();
     UpdateAnimation();
 }
 
