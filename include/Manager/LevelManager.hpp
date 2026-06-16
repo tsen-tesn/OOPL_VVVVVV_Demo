@@ -3,9 +3,12 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
 
 #include <glm/vec2.hpp>
 
+#include "json.hpp"
 #include "Loadlevel.hpp"
 
 class LevelManager {
@@ -23,6 +26,9 @@ public:
 
 private:
     static std::string BuildRoomPath(int roomID);
+    const nlohmann::json& GetRoomJson(int roomID);
+    void PreloadRoom(int roomID);
+    void PreloadConnectedRooms();
     bool TryLoadConnectedRoom(
         int roomID,
         glm::vec2& playerPosition,
@@ -31,6 +37,8 @@ private:
 
 private:
     std::shared_ptr<LoadLevel> m_CurrentLevel;
+    std::unordered_map<int, nlohmann::json> m_RoomJsonCache;
+    std::unordered_set<int> m_PreloadRooms;
     int m_CurrentRoomID = 1;
     int m_RespawnRoomID = 1;
 

@@ -1,5 +1,6 @@
 #include "GameScene.hpp"
 
+#include "Entity/Trigger/CheckPoint.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
@@ -82,12 +83,22 @@ void GameScene::HandleRespawn(bool wasDead) {
 void GameScene::HandleCheckPoints() {
     const auto& level = m_LevelManager->GetCurrentLevel();
 
-    for (const auto& checkpoint : level->GetCheckPoints()) {
+    for (const auto& trigger : level->GetTriggers()) {
+        const auto checkpoint = std::dynamic_pointer_cast<CheckPoint>(trigger);
+        if (!checkpoint) {
+            continue;
+        }
+
         if (checkpoint->IsTouched(m_Player->GetPosition())) {
             if (!checkpoint->IsActivated()) {
                 // 取消所有存檔點，啟用當前
-                for (const auto& cp : level->GetCheckPoints())
+                for (const auto& otherTrigger : level->GetTriggers()) {
+                    const auto cp = std::dynamic_pointer_cast<CheckPoint>(otherTrigger);
+                    if (!cp) {
+                        continue;
+                    }
                     cp->SetActivated(false);
+                }
                 checkpoint->SetActivated(true);
 
                 glm::vec2 safePos;
