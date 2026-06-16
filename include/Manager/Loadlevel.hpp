@@ -6,6 +6,7 @@
 #include <memory>
 #include <vector>
 
+#include "json.hpp"
 #include "Util/GameObject.hpp"
 #include "Entity/TileMap.hpp"
 #include "Entity/Hazard/Spike.hpp"
@@ -30,6 +31,19 @@ public:
     const std::vector<std::shared_ptr<Hazard>>& GetHazards() const { return m_Hazards; }
     const std::vector<std::shared_ptr<Platform>>& GetPlatforms() const { return m_Platforms; }
     const std::vector<std::shared_ptr<CheckPoint>>& GetCheckPoints() const { return m_CheckPoints; }
+
+private:
+    void LoadConnections(const nlohmann::json& levelJson);
+    void LoadBackground(const nlohmann::json& levelJson);
+    void LoadTileMap(const nlohmann::json& levelJson);
+    void LoadLayers(const nlohmann::json& levelJson);
+    void LoadLayer(const nlohmann::json& layerJson);
+    void LoadSpikes(const nlohmann::json& layerJson);
+    void LoadMovingEnemies(const nlohmann::json& layerJson);
+    void LoadDisappearingPlatformGroups(const nlohmann::json& layerJson);
+    void LoadMovingPlatforms(const nlohmann::json& layerJson);
+    void LoadCheckPoints(const nlohmann::json& layerJson);
+    glm::vec2 GridPositionToScreen(const nlohmann::json& positionJson) const;
 
 private:
     Connections m_Connections;

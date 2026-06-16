@@ -9,9 +9,20 @@
 
 #include <json.hpp>
 #include <fstream>
-#include <iostream>
 
 using json = nlohmann::json;
+
+namespace {
+std::vector<std::string> GetImagePaths(const json& layer) {
+    std::vector<std::string> imagePaths;
+    if (layer.contains("image_paths") && layer["image_paths"].is_array()) {
+        imagePaths = layer["image_paths"].get<std::vector<std::string>>();
+    } else if (layer.contains("image_path")) {
+        imagePaths.push_back(layer["image_path"].get<std::string>());
+    }
+    return imagePaths;
+}
+}
 
 LoadLevel::LoadLevel(const std::string& jsonPath) {
     std::ifstream file(jsonPath);
@@ -25,227 +36,239 @@ LoadLevel::LoadLevel(const std::string& jsonPath) {
         throw std::runtime_error("LoadLevel JSON parse error: " + std::string(e.what()));
     }
 
-    if (j.contains("connection")) {
-        m_Connections.up = j["connection"].value("up", -1);
-        m_Connections.right = j["connection"].value("right", -1);
-        m_Connections.down = j["connection"].value("down", -1);
-        m_Connections.left = j["connection"].value("left", -1);
-    } else if (j.contains("connection_id")) {
-        m_Connections.up = j["connection_id"].value("up", -1);
-        m_Connections.right = j["connection_id"].value("right", -1);
-        m_Connections.down = j["connection_id"].value("down", -1);
-        m_Connections.left = j["connection_id"].value("left", -1);
+    LoadConnections(j);
+    LoadBackground(j);
+    LoadTileMap(j);
+    LoadLayers(j);
+}
+
+void LoadLevel::LoadConnections(const json& levelJson) {
+    if (levelJson.contains("connection")) {
+        m_Connections.up = levelJson["connection"].value("up", -1);
+        m_Connections.right = levelJson["connection"].value("right", -1);
+        m_Connections.down = levelJson["connection"].value("down", -1);
+        m_Connections.left = levelJson["connection"].value("left", -1);
+    } else if (levelJson.contains("connection_id")) {
+        m_Connections.up = levelJson["connection_id"].value("up", -1);
+        m_Connections.right = levelJson["connection_id"].value("right", -1);
+        m_Connections.down = levelJson["connection_id"].value("down", -1);
+        m_Connections.left = levelJson["connection_id"].value("left", -1);
+    }
+}
+
+void LoadLevel::LoadBackground(const json& levelJson) {
+    std::string bgPath = levelJson.value("background_path", "");
+    if (bgPath.empty()) {
+        return;
     }
 
-    std::string bgPath = j.value("background_path", "");
-    if (!bgPath.empty()) {
-        const std::string resPrefix = "Resources";
-        std::string absPath;
-        if (bgPath.substr(0, resPrefix.size()) == resPrefix)
-            absPath = std::string(RESOURCE_DIR) + bgPath.substr(resPrefix.size());
-        else
-            absPath = std::string(RESOURCE_DIR) + "/" + bgPath;
-
-        auto bgImage = std::make_shared<Util::Image>(absPath);
-        m_Background.SetDrawable(bgImage);
-        m_Background.SetZIndex(-10.0f);
-        m_Background.m_Transform.translation = {0.0f, 0.0f};
-        m_Background.m_Transform.scale = {3.0f, 3.0f};
+    const std::string resPrefix = "Resources";
+    std::string absPath;
+    if (bgPath.substr(0, resPrefix.size()) == resPrefix) {
+        absPath = std::string(RESOURCE_DIR) + bgPath.substr(resPrefix.size());
+    } else {
+        absPath = std::string(RESOURCE_DIR) + "/" + bgPath;
     }
 
+    auto bgImage = std::make_shared<Util::Image>(absPath);
+    m_Background.SetDrawable(bgImage);
+    m_Background.SetZIndex(-10.0f);
+    m_Background.m_Transform.translation = {0.0f, 0.0f};
+    m_Background.m_Transform.scale = {3.0f, 3.0f};
+}
+
+void LoadLevel::LoadTileMap(const json& levelJson) {
     int gridWidth = 45;
     int gridHeight = 30;
     int tileSize = 8;
-    if (j.contains("grid") && j["grid"].is_object()) {
-        auto& gridObj = j["grid"];
-        gridWidth  = gridObj.value("width", 45);
+    if (levelJson.contains("grid") && levelJson["grid"].is_object()) {
+        const auto& gridObj = levelJson["grid"];
+        gridWidth = gridObj.value("width", 45);
         gridHeight = gridObj.value("height", 30);
-        tileSize   = gridObj.value("tile_size", 8);
+        tileSize = gridObj.value("tile_size", 8);
     }
 
     std::vector<int> gridData;
-    if (j.contains("layers") && j["layers"].is_array()) {
-        for (const auto& layer : j["layers"]) {
+    if (levelJson.contains("layers") && levelJson["layers"].is_array()) {
+        for (const auto& layer : levelJson["layers"]) {
             if (layer.contains("data") && layer["data"].is_array()) {
                 gridData = layer["data"].get<std::vector<int>>();
                 break;
             }
         }
     }
+
     const int expected = gridWidth * gridHeight;
     gridData.resize(static_cast<size_t>(expected), -1);
-
     m_TileMap = std::make_shared<TileMap>(gridWidth, gridHeight, tileSize, gridData);
+}
 
-    if (j.contains("layers") && j["layers"].is_array()) {
-        for (const auto& layer : j["layers"]) {
-            std::string name = layer.value("name", "");
-            
-            // Handle Spikes
-            if (name == "Spikes") {
-                std::string imagePath = layer.value("image_path", "");
-                if (imagePath.empty()) continue;
-
-                if (layer.contains("positions") && layer["positions"].is_array()) {
-                    for (const auto& pos : layer["positions"]) {
-                        float col = pos.value("col", 0.0f);
-                        float row = pos.value("row", 0.0f);
-                        glm::vec2 screenPos = m_TileMap->GridToScreen(col, row);
-                        
-                        auto spike = std::make_shared<Spike>(screenPos, imagePath);
-                        spike->SetZIndex(5.0f);
-                        m_Hazards.push_back(spike);
-                    }
-                }
-            } 
-            // Handle MovingEnemy
-            else if (name == "Moving_enemy") {
-                std::vector<std::string> animPaths;
-                if (layer.contains("image_paths") && layer["image_paths"].is_array()) {
-                    animPaths = layer["image_paths"].get<std::vector<std::string>>();
-                } else if (layer.contains("image_path")) {
-                    animPaths.push_back(layer["image_path"].get<std::string>());
-                }
-                
-                if (animPaths.empty()) continue;
-
-                float scaleValue = layer.value("scale", 2.0f);
-
-                float speedValue = layer.value("speed", 100.0f);
-
-                if (layer.contains("moving_paths") && layer["moving_paths"].is_array()) {
-                    for (const auto& path : layer["moving_paths"]) {
-                        if (!path.contains("start") || !path.contains("end")) continue;
-                        
-                        float startCol = path["start"].value("col", 0.0f);
-                        float startRow = path["start"].value("row", 0.0f);
-                        float endCol = path["end"].value("col", 0.0f);
-                        float endRow = path["end"].value("row", 0.0f);
-
-                        glm::vec2 startPos = m_TileMap->GridToScreen(startCol, startRow);
-                        glm::vec2 endPos = m_TileMap->GridToScreen(endCol, endRow);
-
-                        auto enemy = std::make_shared<MovingEnemy>(startPos, endPos, animPaths, scaleValue, speedValue);
-                        enemy->SetZIndex(10.0f);
-                        m_Hazards.push_back(enemy);
-                    }
-                }
-            }
-
-            else if (name == "DisappearingPlatformGroup") {
-                std::vector<std::string> imagePaths;
-                if (layer.contains("image_paths") && layer["image_paths"].is_array()) {
-                    imagePaths = layer["image_paths"].get<std::vector<std::string>>();
-                } else if (layer.contains("image_path")) {
-                    imagePaths.push_back(layer["image_path"].get<std::string>());
-                }
-                
-                if (imagePaths.empty()) continue;
-
-                if (layer.contains("positions") && layer["positions"].is_array()) {
-                    const auto& positionsArray = layer["positions"];
-                    if (!positionsArray.empty() && positionsArray[0].is_array()) {
-                        // 二維陣列格式：多個 group
-                        for (const auto& groupPositions : positionsArray) {
-                            if (!groupPositions.is_array()) continue;
-                            std::vector<glm::vec2> positions;
-                            for (const auto& pos : groupPositions) {
-                                if (!pos.is_object()) continue;
-                                float col = pos.value("col", 0.0f);
-                                float row = pos.value("row", 0.0f);
-                                glm::vec2 screenPos = m_TileMap->GridToScreen(col, row);
-                                positions.push_back(screenPos);
-                            }
-                            if (positions.empty()) continue;
-                            auto group = std::make_shared<DisappearingPlatformGroup>(positions, imagePaths, 3.0f);
-                            m_Platforms.push_back(group);
-                        }
-                    } else {
-                        // 一維陣列格式：單一 group
-                        std::vector<glm::vec2> positions;
-                        for (const auto& pos : positionsArray) {
-                            if (!pos.is_object()) continue;
-                            float col = pos.value("col", 0.0f);
-                            float row = pos.value("row", 0.0f);
-                            glm::vec2 screenPos = m_TileMap->GridToScreen(col, row);
-                            positions.push_back(screenPos);
-                        }
-                        if (!positions.empty()) {
-                            auto group = std::make_shared<DisappearingPlatformGroup>(positions, imagePaths, 3.0f);
-                            m_Platforms.push_back(group);
-                        }
-                    }
-                }
-            }
-
-            else if (name == "MovingPlatform") {
-                std::vector<std::string> imagePaths;
-                if (layer.contains("image_paths") && layer["image_paths"].is_array()) {
-                    imagePaths = layer["image_paths"].get<std::vector<std::string>>();
-                } else if (layer.contains("image_path")) {
-                    imagePaths.push_back(layer["image_path"].get<std::string>());
-                }
-                
-                if (imagePaths.empty()) continue;
-
-                float scaleValue = layer.value("scale", 3.0f);
-                float speedValue = layer.value("speed", 200.0f);
-
-                if (layer.contains("positions") && layer["positions"].is_array()) {
-                    const auto& positionsArray = layer["positions"];
-                    size_t numPlatforms = std::min(imagePaths.size(), positionsArray.size());
-                    for (size_t i = 0; i < numPlatforms; ++i) {
-                        const auto& pos = positionsArray[i];
-                        if (!pos.is_object() || !pos.contains("original") || !pos.contains("start") || !pos.contains("end")) continue;
-                        
-                        const auto& original = pos["original"];
-                        const auto& start = pos["start"];
-                        const auto& end = pos["end"];
-                        if (!original.is_object() || !start.is_object() || !end.is_object()) continue;
-                        
-                        float originalCol = original.value("col", 0.0f);
-                        float originalRow = original.value("row", 0.0f);
-                        float startCol = start.value("col", 0.0f);
-                        float startRow = start.value("row", 0.0f);
-                        float endCol = end.value("col", 0.0f);
-                        float endRow = end.value("row", 0.0f);
-                        
-                        glm::vec2 originalPos = m_TileMap->GridToScreen(originalCol, originalRow);
-                        glm::vec2 startPos = m_TileMap->GridToScreen(startCol, startRow);
-                        glm::vec2 endPos = m_TileMap->GridToScreen(endCol, endRow);
-                        
-                        auto platform = std::make_shared<MovingPlatform>(originalPos, startPos, endPos, imagePaths[i], scaleValue, speedValue);
-                        m_Platforms.push_back(platform);
-                    }
-                }
-            }
-
-            // Handle CheckPoint
-            else if (name == "CheckPoint") {
-                std::string imagePath;
-                std::string type = layer.value("type", "");
-                if (type == "up") {
-                    imagePath = "Resources/Trigger/trigger_5.png";
-                } else if (type == "down") {
-                    imagePath = "Resources/Trigger/trigger_4.png";
-                }
-
-                if (imagePath.empty()) continue;
-
-                if(layer.contains("positions") && layer["positions"].is_array()) {
-                    for (const auto& pos : layer["positions"]) {
-                        float col = pos.value("col", 0.0f);
-                        float row = pos.value("row", 0.0f);
-                        glm::vec2 screenPos = m_TileMap->GridToScreen(col, row);
-                        
-                        auto checkPoint = std::make_shared<CheckPoint>(screenPos, imagePath);
-                        checkPoint->SetZIndex(5.0f);
-                        m_CheckPoints.push_back(checkPoint);
-                    }
-                }
-            }
-        } 
+void LoadLevel::LoadLayers(const json& levelJson) {
+    if (!levelJson.contains("layers") || !levelJson["layers"].is_array()) {
+        return;
     }
+
+    for (const auto& layer : levelJson["layers"]) {
+        LoadLayer(layer);
+    }
+}
+
+void LoadLevel::LoadLayer(const json& layerJson) {
+    const std::string name = layerJson.value("name", "");
+
+    if (name == "Spikes") {
+        LoadSpikes(layerJson);
+    } else if (name == "Moving_enemy") {
+        LoadMovingEnemies(layerJson);
+    } else if (name == "DisappearingPlatformGroup") {
+        LoadDisappearingPlatformGroups(layerJson);
+    } else if (name == "MovingPlatform") {
+        LoadMovingPlatforms(layerJson);
+    } else if (name == "CheckPoint") {
+        LoadCheckPoints(layerJson);
+    }
+}
+
+void LoadLevel::LoadSpikes(const json& layerJson) {
+    const std::string imagePath = layerJson.value("image_path", "");
+    if (imagePath.empty() || !layerJson.contains("positions") || !layerJson["positions"].is_array()) {
+        return;
+    }
+
+    for (const auto& pos : layerJson["positions"]) {
+        const glm::vec2 screenPos = GridPositionToScreen(pos);
+
+        auto spike = std::make_shared<Spike>(screenPos, imagePath);
+        spike->SetZIndex(5.0f);
+        m_Hazards.push_back(spike);
+    }
+}
+
+void LoadLevel::LoadMovingEnemies(const json& layerJson) {
+    const std::vector<std::string> animPaths = GetImagePaths(layerJson);
+    if (animPaths.empty() || !layerJson.contains("moving_paths") || !layerJson["moving_paths"].is_array()) {
+        return;
+    }
+
+    const float scaleValue = layerJson.value("scale", 2.0f);
+    const float speedValue = layerJson.value("speed", 100.0f);
+
+    for (const auto& path : layerJson["moving_paths"]) {
+        if (!path.contains("start") || !path.contains("end")) {
+            continue;
+        }
+
+        const glm::vec2 startPos = GridPositionToScreen(path["start"]);
+        const glm::vec2 endPos = GridPositionToScreen(path["end"]);
+
+        auto enemy = std::make_shared<MovingEnemy>(startPos, endPos, animPaths, scaleValue, speedValue);
+        enemy->SetZIndex(10.0f);
+        m_Hazards.push_back(enemy);
+    }
+}
+
+void LoadLevel::LoadDisappearingPlatformGroups(const json& layerJson) {
+    const std::vector<std::string> imagePaths = GetImagePaths(layerJson);
+    if (imagePaths.empty() || !layerJson.contains("positions") || !layerJson["positions"].is_array()) {
+        return;
+    }
+
+    const auto& positionsArray = layerJson["positions"];
+    if (!positionsArray.empty() && positionsArray[0].is_array()) {
+        for (const auto& groupPositions : positionsArray) {
+            if (!groupPositions.is_array()) {
+                continue;
+            }
+
+            std::vector<glm::vec2> positions;
+            for (const auto& pos : groupPositions) {
+                if (!pos.is_object()) {
+                    continue;
+                }
+                positions.push_back(GridPositionToScreen(pos));
+            }
+
+            if (!positions.empty()) {
+                auto group = std::make_shared<DisappearingPlatformGroup>(positions, imagePaths, 3.0f);
+                m_Platforms.push_back(group);
+            }
+        }
+        return;
+    }
+
+    std::vector<glm::vec2> positions;
+    for (const auto& pos : positionsArray) {
+        if (!pos.is_object()) {
+            continue;
+        }
+        positions.push_back(GridPositionToScreen(pos));
+    }
+
+    if (!positions.empty()) {
+        auto group = std::make_shared<DisappearingPlatformGroup>(positions, imagePaths, 3.0f);
+        m_Platforms.push_back(group);
+    }
+}
+
+void LoadLevel::LoadMovingPlatforms(const json& layerJson) {
+    const std::vector<std::string> imagePaths = GetImagePaths(layerJson);
+    if (imagePaths.empty() || !layerJson.contains("positions") || !layerJson["positions"].is_array()) {
+        return;
+    }
+
+    const float scaleValue = layerJson.value("scale", 3.0f);
+    const float speedValue = layerJson.value("speed", 200.0f);
+    const auto& positionsArray = layerJson["positions"];
+    const size_t numPlatforms = std::min(imagePaths.size(), positionsArray.size());
+
+    for (size_t i = 0; i < numPlatforms; ++i) {
+        const auto& pos = positionsArray[i];
+        if (!pos.is_object() || !pos.contains("original") || !pos.contains("start") || !pos.contains("end")) {
+            continue;
+        }
+
+        const auto& original = pos["original"];
+        const auto& start = pos["start"];
+        const auto& end = pos["end"];
+        if (!original.is_object() || !start.is_object() || !end.is_object()) {
+            continue;
+        }
+
+        const glm::vec2 originalPos = GridPositionToScreen(original);
+        const glm::vec2 startPos = GridPositionToScreen(start);
+        const glm::vec2 endPos = GridPositionToScreen(end);
+
+        auto platform = std::make_shared<MovingPlatform>(originalPos, startPos, endPos, imagePaths[i], scaleValue, speedValue);
+        m_Platforms.push_back(platform);
+    }
+}
+
+void LoadLevel::LoadCheckPoints(const json& layerJson) {
+    std::string imagePath;
+    const std::string type = layerJson.value("type", "");
+    if (type == "up") {
+        imagePath = "Resources/Trigger/trigger_5.png";
+    } else if (type == "down") {
+        imagePath = "Resources/Trigger/trigger_4.png";
+    }
+
+    if (imagePath.empty() || !layerJson.contains("positions") || !layerJson["positions"].is_array()) {
+        return;
+    }
+
+    for (const auto& pos : layerJson["positions"]) {
+        const glm::vec2 screenPos = GridPositionToScreen(pos);
+
+        auto checkPoint = std::make_shared<CheckPoint>(screenPos, imagePath);
+        checkPoint->SetZIndex(5.0f);
+        m_CheckPoints.push_back(checkPoint);
+    }
+}
+
+glm::vec2 LoadLevel::GridPositionToScreen(const json& positionJson) const {
+    const float col = positionJson.value("col", 0.0f);
+    const float row = positionJson.value("row", 0.0f);
+    return m_TileMap->GridToScreen(col, row);
 }
 
 void LoadLevel::Draw() {
