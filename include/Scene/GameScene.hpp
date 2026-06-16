@@ -3,11 +3,10 @@
 
 #include <memory>
 #include <vector>
-#include <string>
 
 #include "Scene.hpp"
 #include "Player.hpp"
-#include "Loadlevel.hpp"
+#include "LevelManager.hpp"
 #include "Platform.hpp"
 #include "DisappearingPlatformGroup.hpp"
 
@@ -24,10 +23,8 @@ public:
     bool ShouldPause() const { return m_ShouldPause; }
 
 private:
-    // ─── 初始化 ──────────────────────────────────────────────────────
-    void LoadRoom(int roomID, const glm::vec2& spawnPos);
-
     // ─── 每幀子步驟 ──────────────────────────────────────────────────
+    void RefreshCurrentLevelBindings();
     void UpdatePlatforms();
     void HandleRespawn(bool wasDead);
     void HandleCheckPoints();
@@ -36,15 +33,8 @@ private:
 
 private:
     std::shared_ptr<Player>   m_Player;
-    std::shared_ptr<LoadLevel> m_Level;
+    std::unique_ptr<LevelManager> m_LevelManager;
     std::vector<std::shared_ptr<Platform>> m_Platforms;
-
-    int m_CurrentRoomID = 1;
-    int m_RespawnRoomID = 1;
-
-    // 畫面半尺寸（房間邊界）
-    static constexpr float kHalfW = 520.0f;
-    static constexpr float kHalfH = 330.0f;
 
     bool m_ShouldQuit  = false;
     bool m_ShouldPause = false;

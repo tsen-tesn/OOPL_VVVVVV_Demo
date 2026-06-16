@@ -10,6 +10,7 @@ set(SRC_FILES
     Entity/Trigger/CheckPoint.cpp
     Scene/GameScene.cpp
     Scene/MenuScene.cpp
+    Manager/LevelManager.cpp
     Manager/Loadlevel.cpp
 )
 
@@ -26,6 +27,7 @@ set(INCLUDE_FILES
     Entity/Platform/DisappearingPlatformGroup.hpp
     Entity/Trigger/Trigger.hpp
     Entity/Trigger/CheckPoint.hpp
+    Manager/LevelManager.hpp
     Manager/Loadlevel.hpp
     Scene/Scene.hpp
     Scene/GameScene.hpp
