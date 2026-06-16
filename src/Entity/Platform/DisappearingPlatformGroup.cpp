@@ -8,7 +8,7 @@ DisappearingPlatformGroup::DisappearingPlatformGroup(const std::vector<glm::vec2
     // LOG_INFO("DisappearingPlatformGroup created with {} platforms", m_Platforms.size());
 }
 
-void DisappearingPlatformGroup::CheckCollisionAndDisappear(const std::shared_ptr<Player>& player) {
+void DisappearingPlatformGroup::CheckCollisionAndDisappear(const glm::vec2& playerPosition) {
     // 如果組已經開始消失，不再檢查
     bool alreadyTriggered = false;
     for (auto& platform : m_Platforms) {
@@ -19,10 +19,9 @@ void DisappearingPlatformGroup::CheckCollisionAndDisappear(const std::shared_ptr
     }
     if (alreadyTriggered) return;
     
-    glm::vec2 playerPos = player->GetPosition();
     for (auto& platform : m_Platforms) {
         glm::vec2 platformPos = platform->GetPosition();
-        float distance = glm::distance(playerPos, platformPos);
+        float distance = glm::distance(playerPosition, platformPos);
         if (distance < 72.0f) {
             for (auto& p : m_Platforms) {
                 p->Disappear();

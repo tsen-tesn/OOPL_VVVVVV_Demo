@@ -59,7 +59,7 @@ void GameScene::RefreshCurrentLevelBindings() {
 void GameScene::UpdatePlatforms() {
     for (const auto& platform : m_Platforms) {
         if (auto group = std::dynamic_pointer_cast<DisappearingPlatformGroup>(platform)) {
-            group->CheckCollisionAndDisappear(m_Player);
+            group->CheckCollisionAndDisappear(m_Player->GetPosition());
         }
         platform->Update();
     }
