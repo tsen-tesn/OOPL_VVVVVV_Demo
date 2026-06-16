@@ -16,6 +16,7 @@ public:
     GameScene();
 
     void Update() override;
+    void Draw() override;
 
     /// 回傳 true 代表玩家要求離開（ESC）
     bool ShouldQuit()  const { return m_ShouldQuit; }

@@ -17,6 +17,7 @@ void App::Update() {
     switch (m_CurrentState) {
         case State::UPDATE:
             m_CurrentScene->Update();
+            m_CurrentScene->Draw();
             if (m_CurrentScene->ShouldQuit())
                 m_CurrentState = State::END;
             else if (m_CurrentScene->ShouldPause())

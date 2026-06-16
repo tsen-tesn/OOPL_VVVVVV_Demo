@@ -44,11 +44,7 @@ void GameScene::Update() {
     const bool wasDead = m_Player->IsDead();
 
     UpdatePlatforms();
-
-    // 繪製（背景在前）
-    m_Level->Draw();
     m_Player->Update();
-    m_Player->Draw();
 
     HandleRespawn(wasDead);
     HandleCheckPoints();
@@ -60,6 +56,11 @@ void GameScene::Update() {
         Util::Input::IfExit()) {
         m_ShouldQuit = true;
     }
+}
+
+void GameScene::Draw() {
+    m_Level->Draw();
+    m_Player->Draw();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

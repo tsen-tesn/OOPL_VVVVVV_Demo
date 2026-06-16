@@ -6,6 +6,7 @@ public:
     virtual ~Scene() = default;
 
     virtual void Update() = 0;
+    virtual void Draw() = 0;
     virtual bool ShouldQuit() const = 0;
     virtual bool ShouldPause() const = 0;
 };
