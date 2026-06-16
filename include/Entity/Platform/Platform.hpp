@@ -19,9 +19,14 @@ public:
 
     virtual void Disappear() {}
 
+    virtual void Reset() {}
+
     virtual bool IsDisappeared() const { return false; }
 
-    virtual glm::vec2 GetHalfSize() const { return {36.0f, 12.0f}; }
+    virtual glm::vec2 GetHalfSize() const {
+        if (!m_Drawable) return {12.0f, 12.0f};
+        return GetScaledSize() * 0.5f;
+    }
 
     virtual glm::vec2 GetDelta() const { return {0.0f, 0.0f}; }
 };

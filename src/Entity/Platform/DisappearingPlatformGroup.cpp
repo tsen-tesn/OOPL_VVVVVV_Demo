@@ -1,4 +1,5 @@
 #include "Entity/Platform/DisappearingPlatformGroup.hpp"
+#include "Entity/Collision.hpp"
 #include "Util/Logger.hpp"
 
 DisappearingPlatformGroup::DisappearingPlatformGroup(const std::vector<glm::vec2>& positions, const std::vector<std::string>& imagePaths, float scale) {
@@ -8,7 +9,7 @@ DisappearingPlatformGroup::DisappearingPlatformGroup(const std::vector<glm::vec2
     // LOG_INFO("DisappearingPlatformGroup created with {} platforms", m_Platforms.size());
 }
 
-void DisappearingPlatformGroup::CheckCollisionAndDisappear(const std::shared_ptr<Player>& player) {
+void DisappearingPlatformGroup::CheckCollisionAndDisappear(const glm::vec2& playerPosition) {
     // 如果組已經開始消失，不再檢查
     bool alreadyTriggered = false;
     for (auto& platform : m_Platforms) {
@@ -19,11 +20,14 @@ void DisappearingPlatformGroup::CheckCollisionAndDisappear(const std::shared_ptr
     }
     if (alreadyTriggered) return;
     
-    glm::vec2 playerPos = player->GetPosition();
+    const Collision::Rect playerRect =
+        Collision::Expanded(Collision::PlayerRect(playerPosition), {0.0f, 10.0f});
     for (auto& platform : m_Platforms) {
-        glm::vec2 platformPos = platform->GetPosition();
-        float distance = glm::distance(playerPos, platformPos);
-        if (distance < 72.0f) {
+        if (!platform || !platform->IsSolid()) continue;
+
+        const Collision::Rect platformRect =
+            Collision::CenterRect(platform->GetPosition(), platform->GetHalfSize());
+        if (Collision::Touches(playerRect, platformRect)) {
             for (auto& p : m_Platforms) {
                 p->Disappear();
             }
@@ -48,6 +52,12 @@ void DisappearingPlatformGroup::Draw() {
 void DisappearingPlatformGroup::Disappear() {
     for (auto& platform : m_Platforms) {
         platform->Disappear();
+    }
+}
+
+void DisappearingPlatformGroup::Reset() {
+    for (auto& platform : m_Platforms) {
+        platform->Reset();
     }
 }
 

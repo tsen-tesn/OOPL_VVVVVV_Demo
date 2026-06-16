@@ -2,7 +2,6 @@
 #define DISAPPEARINGPLATFORMGROUP_HPP
 
 #include "Entity/Platform/DisappearingPlatform.hpp"
-#include "Entity/Player.hpp"
 #include <memory>
 #include <vector>
 
@@ -13,10 +12,11 @@ public:
     void Update() override;
     void Draw() override;
     void Disappear() override;
+    void Reset() override;
     bool IsDisappeared() const override;
     bool IsSolid() const override;
 
-    void CheckCollisionAndDisappear(const std::shared_ptr<Player>& player);
+    void CheckCollisionAndDisappear(const glm::vec2& playerPosition);
     
     const std::vector<std::shared_ptr<Platform>>& GetPlatforms() const { return m_Platforms; }
 

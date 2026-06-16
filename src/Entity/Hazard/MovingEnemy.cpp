@@ -3,6 +3,7 @@
 #include <cmath>
 #include <memory>
 
+#include "Entity/Collision.hpp"
 #include "Util/Time.hpp"
 
 MovingEnemy::MovingEnemy(const glm::vec2& startPos,
@@ -33,23 +34,5 @@ void MovingEnemy::Update() {
 }
 
 bool MovingEnemy::is_touched(const glm::vec2& playerPos) const {
-    glm::vec2 enemyPos = m_Transform.translation;
-
-    float playerHalfSize = 16.0f;
-    float enemyHalfSize  = 16.0f;
-
-    float playerLeft   = playerPos.x - playerHalfSize;
-    float playerRight  = playerPos.x + playerHalfSize;
-    float playerTop    = playerPos.y - playerHalfSize;
-    float playerBottom = playerPos.y + playerHalfSize;
-
-    float enemyLeft   = enemyPos.x - enemyHalfSize;
-    float enemyRight  = enemyPos.x + enemyHalfSize;
-    float enemyTop    = enemyPos.y - enemyHalfSize;
-    float enemyBottom = enemyPos.y + enemyHalfSize;
-
-    return (playerRight  > enemyLeft  &&
-            playerLeft   < enemyRight &&
-            playerBottom > enemyTop   &&
-            playerTop    < enemyBottom);
+    return Collision::Overlaps(Collision::PlayerRect(playerPos), Collision::ObjectRect(*this));
 }

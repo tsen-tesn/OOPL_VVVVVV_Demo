@@ -56,6 +56,14 @@ void DisappearingPlatform::Disappear() {
     }
 }
 
+void DisappearingPlatform::Reset() {
+    m_State = State::NORMAL;
+    m_AnimationTimer = 0.0f;
+    m_DisappearAnimation = std::make_shared<Util::Animation>(m_ImagePaths, false, 200, true);
+    m_Drawable = m_NormalImage;
+    m_Visible = true;
+}
+
 bool DisappearingPlatform::IsSolid() const {
     return m_State != State::DISAPPEARED && Platform::IsSolid();
 }
