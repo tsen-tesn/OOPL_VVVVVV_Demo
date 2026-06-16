@@ -12,6 +12,7 @@ public:
     void Update() override;
     void Draw() override;
     void Disappear() override;
+    void Reset() override;
     bool IsDisappeared() const override;
     bool IsSolid() const override;
 

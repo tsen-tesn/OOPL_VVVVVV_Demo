@@ -19,6 +19,8 @@ public:
 
     virtual void Disappear() {}
 
+    virtual void Reset() {}
+
     virtual bool IsDisappeared() const { return false; }
 
     virtual glm::vec2 GetHalfSize() const {

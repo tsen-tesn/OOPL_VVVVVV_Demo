@@ -72,6 +72,10 @@ void GameScene::HandleRespawn(bool wasDead) {
             m_LevelManager->LoadRoom(m_LevelManager->GetRespawnRoomID());
             RefreshCurrentLevelBindings();
         }
+
+        for (const auto& platform : m_Platforms) {
+            platform->Reset();
+        }
     }
 }
 

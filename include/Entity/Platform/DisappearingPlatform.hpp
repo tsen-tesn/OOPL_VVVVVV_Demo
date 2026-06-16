@@ -18,6 +18,7 @@ public:
 
     void Update() override;
     void Disappear() override;
+    void Reset() override;
     bool IsDisappeared() const override { return m_State == State::DISAPPEARED; }
     bool IsSolid() const override;
     glm::vec2 GetPosition() const override { return m_Transform.translation; }

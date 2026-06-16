@@ -55,6 +55,12 @@ void DisappearingPlatformGroup::Disappear() {
     }
 }
 
+void DisappearingPlatformGroup::Reset() {
+    for (auto& platform : m_Platforms) {
+        platform->Reset();
+    }
+}
+
 bool DisappearingPlatformGroup::IsDisappeared() const {
     for (auto& platform : m_Platforms) {
         if (!platform->IsDisappeared()) return false;
