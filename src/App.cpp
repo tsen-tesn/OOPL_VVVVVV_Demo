@@ -1,11 +1,12 @@
 #include "App.hpp"
 #include "GameScene.hpp"
+#include "MenuScene.hpp"
 #include "Util/Logger.hpp"
 
 void App::Start() {
     LOG_TRACE("Start");
     try {
-        ChangeScene(SceneType::Game);
+        ChangeScene(SceneType::Menu);
         m_CurrentState = State::UPDATE;
     } catch (const std::exception& e) {
         LOG_ERROR("App::Start failed: {}", e.what());
@@ -57,9 +58,10 @@ void App::ChangeScene(SceneType sceneType) {
 
 std::shared_ptr<Scene> App::CreateScene(SceneType sceneType) {
     switch (sceneType) {
+        case SceneType::Menu:
+            return std::make_shared<MenuScene>();
         case SceneType::Game:
             return std::make_shared<GameScene>();
-        case SceneType::Menu:
         case SceneType::Pause:
             LOG_ERROR("Requested scene is not implemented yet");
             return nullptr;

@@ -9,6 +9,7 @@ set(SRC_FILES
     Entity/Platform/MovingPlatform.cpp
     Entity/Trigger/CheckPoint.cpp
     Scene/GameScene.cpp
+    Scene/MenuScene.cpp
     Manager/Loadlevel.cpp
 )
 
@@ -28,6 +29,7 @@ set(INCLUDE_FILES
     Manager/Loadlevel.hpp
     Scene/Scene.hpp
     Scene/GameScene.hpp
+    Scene/MenuScene.hpp
 )
 
 set(TEST_FILES
