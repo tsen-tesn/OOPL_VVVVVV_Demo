@@ -13,6 +13,21 @@
 using json = nlohmann::json;
 
 namespace {
+json ReadLevelJson(const std::string& jsonPath) {
+    std::ifstream file(jsonPath);
+    if (!file.is_open())
+        throw std::runtime_error("LoadLevel: cannot open " + jsonPath);
+
+    json levelJson;
+    try {
+        file >> levelJson;
+    } catch (json::parse_error& e) {
+        throw std::runtime_error("LoadLevel JSON parse error: " + std::string(e.what()));
+    }
+
+    return levelJson;
+}
+
 std::vector<std::string> GetImagePaths(const json& layer) {
     std::vector<std::string> imagePaths;
     if (layer.contains("image_paths") && layer["image_paths"].is_array()) {
@@ -24,22 +39,14 @@ std::vector<std::string> GetImagePaths(const json& layer) {
 }
 }
 
-LoadLevel::LoadLevel(const std::string& jsonPath) {
-    std::ifstream file(jsonPath);
-    if (!file.is_open())
-        throw std::runtime_error("LoadLevel: cannot open " + jsonPath);
-    
-    json j;
-    try {
-        file >> j;
-    } catch (json::parse_error& e) {
-        throw std::runtime_error("LoadLevel JSON parse error: " + std::string(e.what()));
-    }
+LoadLevel::LoadLevel(const std::string& jsonPath)
+    : LoadLevel(ReadLevelJson(jsonPath)) {}
 
-    LoadConnections(j);
-    LoadBackground(j);
-    LoadTileMap(j);
-    LoadLayers(j);
+LoadLevel::LoadLevel(const json& levelJson) {
+    LoadConnections(levelJson);
+    LoadBackground(levelJson);
+    LoadTileMap(levelJson);
+    LoadLayers(levelJson);
 }
 
 void LoadLevel::LoadConnections(const json& levelJson) {
@@ -261,7 +268,7 @@ void LoadLevel::LoadCheckPoints(const json& layerJson) {
 
         auto checkPoint = std::make_shared<CheckPoint>(screenPos, imagePath);
         checkPoint->SetZIndex(5.0f);
-        m_CheckPoints.push_back(checkPoint);
+        m_Triggers.push_back(checkPoint);
     }
 }
 
@@ -276,7 +283,7 @@ void LoadLevel::Draw() {
     for (auto& hazard : m_Hazards) {
         hazard->Draw();
     }
-    for (auto& trigger : m_CheckPoints) {
+    for (auto& trigger : m_Triggers) {
         trigger->Draw();
     }
     for (auto& platform : m_Platforms) {
