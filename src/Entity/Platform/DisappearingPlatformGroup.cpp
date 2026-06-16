@@ -1,4 +1,5 @@
 #include "Entity/Platform/DisappearingPlatformGroup.hpp"
+#include "Entity/Collision.hpp"
 #include "Util/Logger.hpp"
 
 DisappearingPlatformGroup::DisappearingPlatformGroup(const std::vector<glm::vec2>& positions, const std::vector<std::string>& imagePaths, float scale) {
@@ -19,10 +20,14 @@ void DisappearingPlatformGroup::CheckCollisionAndDisappear(const glm::vec2& play
     }
     if (alreadyTriggered) return;
     
+    const Collision::Rect playerRect =
+        Collision::Expanded(Collision::PlayerRect(playerPosition), {0.0f, 10.0f});
     for (auto& platform : m_Platforms) {
-        glm::vec2 platformPos = platform->GetPosition();
-        float distance = glm::distance(playerPosition, platformPos);
-        if (distance < 72.0f) {
+        if (!platform || !platform->IsSolid()) continue;
+
+        const Collision::Rect platformRect =
+            Collision::CenterRect(platform->GetPosition(), platform->GetHalfSize());
+        if (Collision::Touches(playerRect, platformRect)) {
             for (auto& p : m_Platforms) {
                 p->Disappear();
             }

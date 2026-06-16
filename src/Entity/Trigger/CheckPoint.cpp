@@ -1,4 +1,5 @@
 #include "Entity/Trigger/CheckPoint.hpp"
+#include "Entity/Collision.hpp"
 
 CheckPoint::CheckPoint(const glm::vec2& position, const std::string& imagePath) {
     m_Transform.translation = position;
@@ -7,25 +8,7 @@ CheckPoint::CheckPoint(const glm::vec2& position, const std::string& imagePath) 
 }
 
 bool CheckPoint::IsTouched(const glm::vec2& playerPos) const {
-    glm::vec2 checkpointPos = m_Transform.translation;
-
-    float playerHalfSize = 16.0f;
-    float checkpointHalfSize = 16.0f;
-
-    float playerLeft   = playerPos.x - playerHalfSize;
-    float playerRight  = playerPos.x + playerHalfSize;
-    float playerTop    = playerPos.y - playerHalfSize;
-    float playerBottom = playerPos.y + playerHalfSize;
-
-    float checkpointLeft   = checkpointPos.x - checkpointHalfSize;
-    float checkpointRight  = checkpointPos.x + checkpointHalfSize;
-    float checkpointTop    = checkpointPos.y - checkpointHalfSize;
-    float checkpointBottom = checkpointPos.y + checkpointHalfSize;
-
-    return (playerRight  > checkpointLeft &&
-            playerLeft   < checkpointRight &&
-            playerBottom > checkpointTop &&
-            playerTop    < checkpointBottom);
+    return Collision::Overlaps(Collision::PlayerRect(playerPos), Collision::ObjectRect(*this));
 }
 
 void CheckPoint::SetActivated(bool activated) {

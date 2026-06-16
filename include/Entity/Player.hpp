@@ -11,6 +11,7 @@
 #include "Util/Keycode.hpp"
 #include "Util/Time.hpp"
 #include "Core/Drawable.hpp"
+#include "Collision.hpp"
 #include "TileMap.hpp"
 #include "Platform.hpp"
 
@@ -36,12 +37,12 @@ public:
 
 private:
     // ─── 碰撞常數（集中定義，三個碰撞方法共用）───────────────────────
-    static constexpr float kHalfW       = 24.0f * 3.0f / 2.0f; // 36.0f
-    static constexpr float kHalfH       = 24.0f * 3.0f / 2.0f; // 36.0f
-    static constexpr float kShrinkLeft  = 21.0f;
-    static constexpr float kShrinkRight = 20.0f;
-    static constexpr float kShrinkTop   = 5.0f;
-    static constexpr float kShrinkBot   = 9.0f;
+    static constexpr float kHalfW       = Collision::kPlayerHalfW; // 36.0f
+    static constexpr float kHalfH       = Collision::kPlayerHalfH; // 36.0f
+    static constexpr float kShrinkLeft  = Collision::kPlayerShrinkLeft;
+    static constexpr float kShrinkRight = Collision::kPlayerShrinkRight;
+    static constexpr float kShrinkTop   = Collision::kPlayerShrinkTop;
+    static constexpr float kShrinkBot   = Collision::kPlayerShrinkBot;
     static constexpr float kProbeOffset = 10.0f;
 
     // ─── Update 子步驟 ────────────────────────────────────────────────
