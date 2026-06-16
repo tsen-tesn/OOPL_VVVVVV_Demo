@@ -26,7 +26,7 @@ set(INCLUDE_FILES
     Entity/Trigger/Trigger.hpp
     Entity/Trigger/CheckPoint.hpp
     Manager/Loadlevel.hpp
-    Scene/IScene.hpp
+    Scene/Scene.hpp
     Scene/GameScene.hpp
 )
 

@@ -21,6 +21,10 @@ public:
     void End();
 
 private:
+    void ChangeScene(SceneType sceneType);
+    std::shared_ptr<Scene> CreateScene(SceneType sceneType);
+
+private:
     State m_CurrentState = State::START;
     std::shared_ptr<Scene> m_CurrentScene;
 };

@@ -5,7 +5,7 @@
 void App::Start() {
     LOG_TRACE("Start");
     try {
-        m_CurrentScene = std::make_shared<GameScene>();
+        ChangeScene(SceneType::Game);
         m_CurrentState = State::UPDATE;
     } catch (const std::exception& e) {
         LOG_ERROR("App::Start failed: {}", e.what());
@@ -22,6 +22,8 @@ void App::Update() {
                 m_CurrentState = State::END;
             else if (m_CurrentScene->ShouldPause())
                 m_CurrentState = State::PAUSE; // Phase 4 預留
+            else if (const auto nextScene = m_CurrentScene->GetNextScene())
+                ChangeScene(*nextScene);
             break;
 
         case State::PAUSE:
@@ -43,4 +45,25 @@ void App::Update() {
 
 void App::End() {
     LOG_TRACE("End");
+}
+
+void App::ChangeScene(SceneType sceneType) {
+    m_CurrentScene = CreateScene(sceneType);
+    if (!m_CurrentScene) {
+        LOG_ERROR("Failed to create scene");
+        m_CurrentState = State::END;
+    }
+}
+
+std::shared_ptr<Scene> App::CreateScene(SceneType sceneType) {
+    switch (sceneType) {
+        case SceneType::Game:
+            return std::make_shared<GameScene>();
+        case SceneType::Menu:
+        case SceneType::Pause:
+            LOG_ERROR("Requested scene is not implemented yet");
+            return nullptr;
+    }
+
+    return nullptr;
 }
