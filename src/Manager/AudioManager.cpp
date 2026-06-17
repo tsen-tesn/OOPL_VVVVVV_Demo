@@ -7,7 +7,7 @@ AudioManager& AudioManager::GetInstance() {
 
 AudioManager::AudioManager() {
     m_GameBgm = std::make_unique<Util::BGM>("Resources/Sound/background.wav");
-    m_GameBgm->SetVolume(80);
+    m_GameBgm->SetVolume(60);
 
     m_JumpUpSfx = std::make_unique<Util::SFX>("Resources/Sound/jump.wav");
     m_JumpDownSfx = std::make_unique<Util::SFX>("Resources/Sound/jump2.wav");
