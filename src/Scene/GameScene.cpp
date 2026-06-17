@@ -1,6 +1,7 @@
 #include "GameScene.hpp"
 
 #include "Entity/Trigger/CheckPoint.hpp"
+#include "AudioManager.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
@@ -13,6 +14,8 @@ GameScene::GameScene() {
     m_Player = std::make_shared<Player>(m_LevelManager->GetCurrentLevel()->GetTileMap());
     m_Player->SetRespawnPos({-200.0f, -150.0f});
     RefreshCurrentLevelBindings();
+
+    AudioManager::GetInstance().PlayGameBgm();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -106,6 +109,7 @@ void GameScene::HandleCheckPoints() {
                 safePos.y = m_Player->GetPosition().y;
                 m_Player->SetRespawnPos(safePos);
                 m_LevelManager->SetRespawnRoomID(m_LevelManager->GetCurrentRoomID());
+                AudioManager::GetInstance().PlaySave();
                 LOG_INFO("Checkpoint Saved");
             }
         }

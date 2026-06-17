@@ -1,5 +1,6 @@
 #include "Player.hpp"
 #include "DisappearingPlatformGroup.hpp"
+#include "AudioManager.hpp"
 #include "Util/Logger.hpp"
 
 #include <memory>
@@ -111,12 +112,25 @@ void Player::HandleInput() {
 
     // 只有貼地時才允許翻轉重力
     if (IsOnSurface()) {
-        if (Util::Input::IsKeyDown(Util::Keycode::DOWN))
-            m_GravityDown = false;
-        else if (Util::Input::IsKeyDown(Util::Keycode::UP))
-            m_GravityDown = true;
-        else if (Util::Input::IsKeyDown(Util::Keycode::SPACE))
+        if (Util::Input::IsKeyDown(Util::Keycode::DOWN)) {
+            if (m_GravityDown) {
+                m_GravityDown = false;
+                AudioManager::GetInstance().PlayJumpDown();
+            }
+        }
+        else if (Util::Input::IsKeyDown(Util::Keycode::UP)) {
+            if (!m_GravityDown) {
+                m_GravityDown = true;
+                AudioManager::GetInstance().PlayJumpUp();
+            }
+        }
+        else if (Util::Input::IsKeyDown(Util::Keycode::SPACE)) {
             m_GravityDown = !m_GravityDown;
+            if (m_GravityDown)
+                AudioManager::GetInstance().PlayJumpUp();
+            else
+                AudioManager::GetInstance().PlayJumpDown();
+        }
     }
 }
 
@@ -193,6 +207,7 @@ void Player::Respawn() {
 
 void Player::Die() {
     if (m_IsDead) return;
+    AudioManager::GetInstance().PlayHurt();
     LOG_INFO("Player died");
     m_IsDead     = true;
     m_DeathTimer = 0.0f;
