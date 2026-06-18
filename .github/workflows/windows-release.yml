@@ -26,7 +26,14 @@ jobs:
         run: |
           $packageDir = "dist/VVVVVV_DEMO-windows-x86_64"
           New-Item -ItemType Directory -Force -Path $packageDir | Out-Null
-          Copy-Item "build-windows/Release/VVVVVV_DEMO.exe" "$packageDir/VVVVVV_DEMO.exe"
+
+          $exe = Get-ChildItem -Path "build-windows" -Filter "VVVVVV_DEMO.exe" -Recurse | Select-Object -First 1
+          if (-not $exe) {
+            Get-ChildItem -Path "build-windows" -Recurse | Select-Object FullName
+            throw "VVVVVV_DEMO.exe was not found in build-windows."
+          }
+
+          Copy-Item $exe.FullName "$packageDir/VVVVVV_DEMO.exe"
           Copy-Item "Resources" "$packageDir/Resources" -Recurse
           Compress-Archive -Path "$packageDir/*" -DestinationPath "dist/VVVVVV_DEMO-windows-x86_64.zip" -Force
 
