@@ -37,12 +37,22 @@ std::vector<std::string> GetImagePaths(const json& layer) {
     }
     return imagePaths;
 }
+
+bool ShouldStartAtEnd(const json& path, const std::string& entrySide) {
+    const bool defaultStartAtEnd = path.value("start_at_end", false);
+    if (entrySide.empty() || !path.contains("entry_start_at_end") || !path["entry_start_at_end"].is_object()) {
+        return defaultStartAtEnd;
+    }
+
+    return path["entry_start_at_end"].value(entrySide, defaultStartAtEnd);
+}
 }
 
 LoadLevel::LoadLevel(const std::string& jsonPath)
     : LoadLevel(ReadLevelJson(jsonPath)) {}
 
-LoadLevel::LoadLevel(const json& levelJson) {
+LoadLevel::LoadLevel(const json& levelJson, const std::string& entrySide)
+    : m_EntrySide(entrySide) {
     LoadConnections(levelJson);
     LoadBackground(levelJson);
     LoadTileMap(levelJson);
@@ -167,8 +177,9 @@ void LoadLevel::LoadMovingEnemies(const json& layerJson) {
 
         const glm::vec2 startPos = GridPositionToScreen(path["start"]);
         const glm::vec2 endPos = GridPositionToScreen(path["end"]);
+        const bool startAtEnd = ShouldStartAtEnd(path, m_EntrySide);
 
-        auto enemy = std::make_shared<MovingEnemy>(startPos, endPos, animPaths, scaleValue, speedValue);
+        auto enemy = std::make_shared<MovingEnemy>(startPos, endPos, animPaths, scaleValue, speedValue, startAtEnd);
         enemy->SetZIndex(10.0f);
         m_Hazards.push_back(enemy);
     }

@@ -143,7 +143,11 @@
             "moving_paths": [
                 {
                     "start": {"col": 47, "row": 5.4}, 
-                    "end": {"col": -3, "row": 5.4}
+                    "end": {"col": -3, "row": 5.4},
+                    "entry_start_at_end": {
+                        "left": false,
+                        "right": true
+                    }
                 }
             ]
         }

@@ -23,7 +23,7 @@ public:
     };
 
     explicit LoadLevel(const std::string& jsonPath);
-    explicit LoadLevel(const nlohmann::json& levelJson);
+    explicit LoadLevel(const nlohmann::json& levelJson, const std::string& entrySide = "");
 
     void Draw();
     
@@ -48,6 +48,7 @@ private:
 
 private:
     Connections m_Connections;
+    std::string m_EntrySide;
     std::shared_ptr<TileMap> m_TileMap;
     Util::GameObject m_Background;
     std::vector<std::shared_ptr<Hazard>> m_Hazards;

@@ -10,9 +10,11 @@ MovingEnemy::MovingEnemy(const glm::vec2& startPos,
                          const glm::vec2& endPos,
                          const std::vector<std::string>& imagePaths,
                          float scale,
-                         float speed)
+                         float speed,
+                         bool startAtEnd)
     : m_StartPos(startPos), m_EndPos(endPos), m_Speed(speed) {
-    m_Transform.translation = startPos;
+    m_MovingToEnd           = !startAtEnd;
+    m_Transform.translation = startAtEnd ? endPos : startPos;
     m_Transform.scale       = {scale, scale};
     m_Drawable              = std::make_shared<Util::Animation>(imagePaths, true, 100, true);
 }

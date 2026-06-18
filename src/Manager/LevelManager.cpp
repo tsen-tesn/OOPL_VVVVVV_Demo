@@ -9,8 +9,8 @@ LevelManager::LevelManager(int startRoomID) {
     m_RespawnRoomID = startRoomID;
 }
 
-void LevelManager::LoadRoom(int roomID) {
-    m_CurrentLevel = std::make_shared<LoadLevel>(GetRoomJson(roomID));
+void LevelManager::LoadRoom(int roomID, const std::string& entrySide) {
+    m_CurrentLevel = std::make_shared<LoadLevel>(GetRoomJson(roomID), entrySide);
     m_PreloadRooms.insert(roomID);
     m_CurrentRoomID = roomID;
     PreloadConnectedRooms();
@@ -28,7 +28,8 @@ bool LevelManager::TryTransition(glm::vec2& playerPosition) {
             connections.right,
             playerPosition,
             {-kHalfW + kWrapOffset, playerPosition.y},
-            {kHalfW, playerPosition.y});
+            {kHalfW, playerPosition.y},
+            "left");
     }
 
     if (playerPosition.x <= -kHalfW) {
@@ -40,7 +41,8 @@ bool LevelManager::TryTransition(glm::vec2& playerPosition) {
             connections.left,
             playerPosition,
             {kHalfW - kWrapOffset, playerPosition.y},
-            {-kHalfW, playerPosition.y});
+            {-kHalfW, playerPosition.y},
+            "right");
     }
 
     if (playerPosition.y >= kHalfH) {
@@ -52,7 +54,8 @@ bool LevelManager::TryTransition(glm::vec2& playerPosition) {
             connections.up,
             playerPosition,
             {playerPosition.x, -kHalfH + kWrapOffset},
-            {playerPosition.x, kHalfH});
+            {playerPosition.x, kHalfH},
+            "down");
     }
 
     if (playerPosition.y <= -kHalfH) {
@@ -64,7 +67,8 @@ bool LevelManager::TryTransition(glm::vec2& playerPosition) {
             connections.down,
             playerPosition,
             {playerPosition.x, kHalfH - kWrapOffset},
-            {playerPosition.x, -kHalfH});
+            {playerPosition.x, -kHalfH},
+            "up");
     }
 
     return false;
@@ -126,9 +130,10 @@ bool LevelManager::TryLoadConnectedRoom(
     int roomID,
     glm::vec2& playerPosition,
     const glm::vec2& wrappedPosition,
-    const glm::vec2& blockedPosition) {
+    const glm::vec2& blockedPosition,
+    const std::string& entrySide) {
     try {
-        LoadRoom(roomID);
+        LoadRoom(roomID, entrySide);
         playerPosition = wrappedPosition;
         return true;
     } catch (const std::exception& e) {

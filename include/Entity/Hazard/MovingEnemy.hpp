@@ -13,7 +13,8 @@ public:
                 const glm::vec2& endPos,
                 const std::vector<std::string>& imagePaths,
                 float scale = 1.0f,
-                float speed = 100.0f);
+                float speed = 100.0f,
+                bool startAtEnd = false);
 
     ~MovingEnemy() override = default;
 

@@ -15,7 +15,7 @@ class LevelManager {
 public:
     explicit LevelManager(int startRoomID = 1);
 
-    void LoadRoom(int roomID);
+    void LoadRoom(int roomID, const std::string& entrySide = "");
     bool TryTransition(glm::vec2& playerPosition);
 
     const std::shared_ptr<LoadLevel>& GetCurrentLevel() const { return m_CurrentLevel; }
@@ -33,7 +33,8 @@ private:
         int roomID,
         glm::vec2& playerPosition,
         const glm::vec2& wrappedPosition,
-        const glm::vec2& blockedPosition);
+        const glm::vec2& blockedPosition,
+        const std::string& entrySide);
 
 private:
     std::shared_ptr<LoadLevel> m_CurrentLevel;
