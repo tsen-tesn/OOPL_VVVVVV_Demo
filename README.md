@@ -1,24 +1,62 @@
-# PTSD Template
+# Abstract
 
-This is a [PTSD](https://github.com/ntut-open-source-club/practical-tools-for-simple-design) framework template for students taking OOPL2024s.
+遊戲名稱：VVVVVV Demo
 
-## Quick Start
+組員：
 
-1. Use this template to create a new repository
-   ![github screenshot](https://github.com/ntut-rick/ptsd-template/assets/126899559/ef62242f-03ed-481d-b858-12b730c09beb)
+- 113820014 吳恩彤
+- 113820031 陳彥岑
 
-2. Clone your repository
+# Game Introduction
 
-   ```bash
-   git clone YOUR_GIT_URL --recursive
-   ```
+VVVVVV Demo 是經典 2D 復古平台益智遊戲的免費體驗版。玩家扮演船長 Viridian，無法跳躍，只能透過「翻轉重力」來操控角色在天花板與地面間穿梭，挑戰快速、高難度且極簡的關卡設計。 
 
-3. Build your project
+# Development timeline
 
-  > [!WARNING]
-  > Please build your project in `Debug` because our `Release` path is broken D:
-   
-   ```sh
-   cmake -DCMAKE_BUILD_TYPE=Debug -B build # -G Ninja
-   ```
-   better read [PTSD README](https://github.com/ntut-open-source-club/practical-tools-for-simple-design)
+- Week 02：撰寫 Proposal、完成練習
+  - [x] 撰寫 VVVVVV Demo Proposal
+  - [x] 建立專案 repo 
+- Week 03：蒐集素材及基礎類別宣告
+  - [x] 蒐集 Captain Viridian 與敵人的 Sprite Sheets、背景音樂、特殊事件音效、遊戲封面等素材
+  - [x] 實作基礎抽象類別 GameObject（包含座標、渲染介面）
+- Week 04：核心玩家類別與重力邏輯
+  - [x] 設計角色基本移動
+  - [x] 設計重力函數
+- Week 05：地圖系統與靜態碰撞
+  - [x] 處理牆壁與地板的資料結構
+  - [x] 實作碰撞偵測（偵測玩家是否「著地」以決定能否翻轉重力）
+- Week 06：危險物件與死亡判定
+  - [x] 實作衍生出不同方向的尖刺
+  - [x] 實作角色碰觸危險物件後的死亡判定
+- Week 07：房間系統 (Room-based System)
+  - [x] 實作 Room 類別，管理單一螢幕內出現的物件
+  - [x] 實作邊界偵測：當玩家座標超出螢幕時，切換至相鄰的 Room 實體
+- Week 08：檢查點的製作
+  - [x] 實作 Checkpoint 類別，利用 觀察者模式 紀錄玩家最後觸碰的位置
+  - [x] 確保死亡後能正確回溯至該檢查點狀態
+- Week 09：期中 Demo 準備與整合
+  - [x] 整合目前功能：玩家能在兩個房間移動、翻轉重力、會被尖刺殺死並重生
+  - [x] 修正物理判定的 Edge Cases（如卡在牆縫）
+- Week 10：期中 Demo
+  - [x] 展示核心機制與類別設計結構
+- Week 11：動態障礙物
+  - [x] 設計動態敵人的移動邏輯
+  - [x] 加入動畫狀態機：切換走動、站立、翻轉中
+- Week 12：設計特效與音效
+  - [x] 處理 VVVVVV 經典電子音效
+  - [x] 加入簡單的畫面閃爍特效（背景色彩變換）
+- Week 13：特殊環境機制
+  - [x] 實作「傳送線」與「消失平台」邏輯
+- Week 14：UI/UX 優化與主選單
+  - [x] 製作標題畫面、暫停選單
+  - [x] 優化 UI 字體（使用像素風字體以符合原作美學）
+- Week 15：關卡序列化與擴充
+  - [x] 實作從外部檔案（如 JSON 或文字檔）讀取關卡配置
+  - [x] 設計並實作一個完整的 Demo 區域
+- Week 16：效能測試與 Bug 修復
+  - [x] 檢查物件在切換房間時是否有正確釋放（避免記憶體洩漏）
+  - [x] 進行代碼重構，確保符合 Clean Code 與封裝原則
+- Week 17：提交
+  - [x] 拍攝影片
+  - [x] 製作遊戲簡報
+  - [x] 驗收並提交
