@@ -13,6 +13,7 @@ AudioManager::AudioManager() {
     m_JumpDownSfx = std::make_unique<Util::SFX>("Resources/Sound/jump2.wav");
     m_HurtSfx = std::make_unique<Util::SFX>("Resources/Sound/hurt.wav");
     m_SaveSfx = std::make_unique<Util::SFX>("Resources/Sound/save.wav");
+    m_GameCompleteSfx = std::make_unique<Util::SFX>("Resources/Sound/souleyeminijingle.wav");
 }
 
 void AudioManager::PlayGameBgm() {
@@ -22,6 +23,15 @@ void AudioManager::PlayGameBgm() {
 
     m_GameBgm->Play();
     m_IsGameBgmPlaying = true;
+}
+
+void AudioManager::PauseGameBgm() {
+    if (!m_IsGameBgmPlaying) {
+        return;
+    }
+
+    m_GameBgm->Pause();
+    m_IsGameBgmPlaying = false;
 }
 
 void AudioManager::PlayJumpUp() {
@@ -38,4 +48,8 @@ void AudioManager::PlayHurt() {
 
 void AudioManager::PlaySave() {
     m_SaveSfx->Play();
+}
+
+void AudioManager::PlayGameComplete() {
+    m_GameCompleteSfx->Play();
 }

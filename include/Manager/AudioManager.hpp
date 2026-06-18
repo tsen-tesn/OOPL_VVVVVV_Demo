@@ -14,10 +14,12 @@ public:
     static AudioManager& GetInstance();
 
     void PlayGameBgm();
+    void PauseGameBgm();
     void PlayJumpUp();
     void PlayJumpDown();
     void PlayHurt();
     void PlaySave();
+    void PlayGameComplete();
 
 private:
     AudioManager();
@@ -28,6 +30,7 @@ private:
     std::unique_ptr<Util::SFX> m_JumpDownSfx;
     std::unique_ptr<Util::SFX> m_HurtSfx;
     std::unique_ptr<Util::SFX> m_SaveSfx;
+    std::unique_ptr<Util::SFX> m_GameCompleteSfx;
 
     bool m_IsGameBgmPlaying = false;
 };

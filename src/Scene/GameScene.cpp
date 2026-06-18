@@ -2,26 +2,66 @@
 
 #include "Entity/Trigger/CheckPoint.hpp"
 #include "AudioManager.hpp"
+#include "Util/Image.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
+#include "Util/Time.hpp"
 
-// ─────────────────────────────────────────────────────────────────────────────
+namespace {
+constexpr int kFinalRoomID = 25;
+constexpr float kCompleteJingleDuration = 3.1f;
+constexpr float kCompleteTransitionDuration = 0.8f;
+constexpr glm::vec2 kCompleteBannerCenter = {0.0f, 0.0f};
+constexpr float kCompleteBannerScale = 2.0f;
+}
+
 // 建構子 / 初始化
-// ─────────────────────────────────────────────────────────────────────────────
 GameScene::GameScene() {
     m_LevelManager = std::make_unique<LevelManager>(1);
     m_Player = std::make_shared<Player>(m_LevelManager->GetCurrentLevel()->GetTileMap());
     m_Player->SetRespawnPos({-200.0f, -150.0f});
+    m_GameCompleteBanner = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Image>("Resources/Font/gamecomplete.png"),
+        100.0f
+    );
+    m_GameCompleteBanner->m_Transform.translation = kCompleteBannerCenter;
+    m_GameCompleteBanner->m_Transform.scale = {kCompleteBannerScale, kCompleteBannerScale};
     RefreshCurrentLevelBindings();
 
     AudioManager::GetInstance().PlayGameBgm();
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
 // 主更新迴圈
-// ─────────────────────────────────────────────────────────────────────────────
 void GameScene::Update() {
+    if (m_IsGameComplete) {
+        const float dt = std::min(Util::Time::GetDeltaTimeMs() / 1000.0f, 0.05f);
+        m_GameCompleteTimer += dt;
+
+        const float transitionStart = kCompleteJingleDuration;
+        const float transitionEnd = transitionStart + kCompleteTransitionDuration;
+        if (m_GameCompleteTimer >= transitionEnd) {
+            m_NextScene = SceneType::Menu;
+            return;
+        }
+
+        if (m_GameCompleteTimer >= transitionStart) {
+            const float progress = (m_GameCompleteTimer - transitionStart) / kCompleteTransitionDuration;
+            const float scale = kCompleteBannerScale * (1.0f - 0.7f * progress);
+            m_GameCompleteBanner->m_Transform.translation = {
+                kCompleteBannerCenter.x,
+                kCompleteBannerCenter.y + 160.0f * progress
+            };
+            m_GameCompleteBanner->m_Transform.scale = {scale, scale};
+        }
+
+        if (Util::Input::IsKeyUp(Util::Keycode::ESCAPE) ||
+            Util::Input::IfExit()) {
+            m_ShouldQuit = true;
+        }
+        return;
+    }
+
     // 暫停輸入
     if (Util::Input::IsKeyDown(Util::Keycode::P)) {
         m_ShouldPause = true;
@@ -47,12 +87,14 @@ void GameScene::Update() {
 
 void GameScene::Draw() {
     m_LevelManager->GetCurrentLevel()->Draw();
-    m_Player->Draw();
+    if (m_IsGameComplete) {
+        m_GameCompleteBanner->Draw();
+    } else {
+        m_Player->Draw();
+    }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
 // 子步驟
-// ─────────────────────────────────────────────────────────────────────────────
 void GameScene::RefreshCurrentLevelBindings() {
     const auto& level = m_LevelManager->GetCurrentLevel();
     m_Platforms = level->GetPlatforms();
@@ -93,6 +135,11 @@ void GameScene::HandleCheckPoints() {
         }
 
         if (checkpoint->IsTouched(m_Player->GetPosition())) {
+            if (m_LevelManager->GetCurrentRoomID() == kFinalRoomID) {
+                TriggerGameComplete();
+                return;
+            }
+
             if (!checkpoint->IsActivated()) {
                 // 取消所有存檔點，啟用當前
                 for (const auto& otherTrigger : level->GetTriggers()) {
@@ -125,9 +172,7 @@ void GameScene::HandleHazards() {
     }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// 房間切換（消除四方向重複程式碼）
-// ─────────────────────────────────────────────────────────────────────────────
+// 房間切換
 void GameScene::HandleRoomTransition() {
     glm::vec2 pos = m_Player->GetTransform().translation;
     const bool changedRoom = m_LevelManager->TryTransition(pos);
@@ -139,4 +184,17 @@ void GameScene::HandleRoomTransition() {
     if (changedRoom) {
         RefreshCurrentLevelBindings();
     }
+}
+
+void GameScene::TriggerGameComplete() {
+    if (m_IsGameComplete) {
+        return;
+    }
+
+    m_IsGameComplete = true;
+    m_GameCompleteTimer = 0.0f;
+    m_GameCompleteBanner->m_Transform.translation = kCompleteBannerCenter;
+    m_GameCompleteBanner->m_Transform.scale = {kCompleteBannerScale, kCompleteBannerScale};
+    AudioManager::GetInstance().PauseGameBgm();
+    AudioManager::GetInstance().PlayGameComplete();
 }
