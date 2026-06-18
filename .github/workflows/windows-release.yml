@@ -53,6 +53,8 @@ jobs:
 
           Copy-Item $exe.FullName "$packageDir/VVVVVV_DEMO.exe"
           Copy-Item "Resources" "$packageDir/Resources" -Recurse
+          New-Item -ItemType Directory -Force -Path "$packageDir/PTSD" | Out-Null
+          Copy-Item "PTSD/assets" "$packageDir/PTSD/assets" -Recurse
           Compress-Archive -Path "$packageDir/*" -DestinationPath "dist/VVVVVV_DEMO-windows-x86_64.zip" -Force
 
       - name: Upload artifact

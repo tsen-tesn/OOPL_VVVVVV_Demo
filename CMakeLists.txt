@@ -22,6 +22,15 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(ptsd)
 
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+    get_target_property(PTSD_COMPILE_DEFINITIONS PTSD COMPILE_DEFINITIONS)
+    if(PTSD_COMPILE_DEFINITIONS)
+        list(FILTER PTSD_COMPILE_DEFINITIONS EXCLUDE REGEX "^PTSD_ASSETS_DIR=")
+        set_target_properties(PTSD PROPERTIES COMPILE_DEFINITIONS "${PTSD_COMPILE_DEFINITIONS}")
+    endif()
+    target_compile_definitions(PTSD PRIVATE PTSD_ASSETS_DIR="PTSD/assets")
+endif()
+
 include(files.cmake)
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
