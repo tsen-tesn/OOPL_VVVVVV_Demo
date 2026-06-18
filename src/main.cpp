@@ -2,7 +2,23 @@
 
 #include "Core/Context.hpp"
 
-int main(int, char**) {
+#include <filesystem>
+#include <system_error>
+
+namespace {
+void UseExecutableDirectoryAsWorkingDirectory(const char* executablePath) {
+    const std::filesystem::path path(executablePath);
+    if (!path.has_parent_path())
+        return;
+
+    std::error_code error;
+    std::filesystem::current_path(path.parent_path(), error);
+}
+}
+
+int main(int, char** argv) {
+    UseExecutableDirectoryAsWorkingDirectory(argv[0]);
+
     auto context = Core::Context::GetInstance();
     App app;
 
