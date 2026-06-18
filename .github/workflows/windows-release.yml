@@ -1,4 +1,4 @@
-name: Windows Release Build
+name: Release Build
 
 on:
   workflow_dispatch:
@@ -7,6 +7,76 @@ on:
       - "v*"
 
 jobs:
+  build-linux:
+    name: Build Linux x86_64
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            pkg-config \
+            libasound2-dev \
+            libpulse-dev \
+            libudev-dev \
+            libgl1-mesa-dev \
+            libglu1-mesa-dev \
+            libx11-dev \
+            libxext-dev \
+            libxcursor-dev \
+            libxi-dev \
+            libxfixes-dev \
+            libxrandr-dev \
+            libxrender-dev \
+            libxss-dev \
+            libdrm-dev \
+            libgbm-dev \
+            libwayland-dev \
+            libdecor-0-dev \
+            libxkbcommon-dev \
+            wayland-protocols
+
+      - name: Configure
+        run: |
+          cmake -S . -B build-linux \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+            -DCMAKE_POLICY_DEFAULT_CMP0077=NEW \
+            -DSDL2MIXER_INSTALL=OFF \
+            -DSDL2MIXER_VENDORED=ON \
+            -DSDL2MIXER_FLAC=OFF \
+            -DSDL2MIXER_MIDI=OFF \
+            -DSDL2MIXER_MOD=OFF \
+            -DSDL2MIXER_OPUS=OFF \
+            -DSDL2MIXER_OGG=OFF \
+            -DSDL2MIXER_VORBIS=OFF \
+            -DSDL2MIXER_VOC=OFF
+
+      - name: Build
+        run: cmake --build build-linux --target VVVVVV_DEMO
+
+      - name: Package
+        run: |
+          package_dir="dist/VVVVVV_DEMO-linux-x86_64"
+          mkdir -p "$package_dir/PTSD"
+          cp "build-linux/VVVVVV_DEMO" "$package_dir/VVVVVV_DEMO"
+          cp -R "Resources" "$package_dir/Resources"
+          cp -R "PTSD/assets" "$package_dir/PTSD/assets"
+          cmake -E chdir dist cmake -E tar cf "VVVVVV_DEMO-linux-x86_64.zip" --format=zip -- "VVVVVV_DEMO-linux-x86_64"
+        working-directory: .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VVVVVV_DEMO-linux-x86_64
+          path: dist/VVVVVV_DEMO-linux-x86_64.zip
+
   build-windows:
     name: Build Windows x86_64
     runs-on: windows-latest
