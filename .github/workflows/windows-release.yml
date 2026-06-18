@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configure
-        run: cmake -S . -B build-windows -DCMAKE_BUILD_TYPE=Release
+        run: cmake -S . -B build-windows -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
       - name: Build
         run: cmake --build build-windows --config Release --target VVVVVV_DEMO
