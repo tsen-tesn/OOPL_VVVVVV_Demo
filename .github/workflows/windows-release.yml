@@ -1,0 +1,37 @@
+name: Windows Release Build
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-windows:
+    name: Build Windows x86_64
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -S . -B build-windows -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build build-windows --config Release --target VVVVVV_DEMO
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $packageDir = "dist/VVVVVV_DEMO-windows-x86_64"
+          New-Item -ItemType Directory -Force -Path $packageDir | Out-Null
+          Copy-Item "build-windows/Release/VVVVVV_DEMO.exe" "$packageDir/VVVVVV_DEMO.exe"
+          Copy-Item "Resources" "$packageDir/Resources" -Recurse
+          Compress-Archive -Path "$packageDir/*" -DestinationPath "dist/VVVVVV_DEMO-windows-x86_64.zip" -Force
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VVVVVV_DEMO-windows-x86_64
+          path: dist/VVVVVV_DEMO-windows-x86_64.zip

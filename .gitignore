@@ -488,6 +488,8 @@ FodyWeavers.xsd
 
 # Default build directory for CMake extension
 build/
+build-release/
+dist/
 
 # Ignore 3rd party dependencies
 lib/
