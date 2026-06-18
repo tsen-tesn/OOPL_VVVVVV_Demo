@@ -490,6 +490,7 @@ FodyWeavers.xsd
 build/
 build-release/
 dist/
+*:Zone.Identifier
 
 # Ignore 3rd party dependencies
 lib/
