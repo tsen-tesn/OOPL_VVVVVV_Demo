@@ -2,18 +2,23 @@
 
 #include "Entity/Trigger/CheckPoint.hpp"
 #include "AudioManager.hpp"
+#include "Util/Color.hpp"
 #include "Util/Image.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "Util/Logger.hpp"
+#include "Util/Text.hpp"
 #include "Util/Time.hpp"
 
 namespace {
+const std::string kFont = "Resources/Font/space-station.ttf";
 constexpr int kFinalRoomID = 25;
 constexpr float kCompleteJingleDuration = 3.1f;
 constexpr float kCompleteTransitionDuration = 0.8f;
 constexpr glm::vec2 kCompleteBannerCenter = {0.0f, 0.0f};
 constexpr float kCompleteBannerScale = 2.0f;
+constexpr glm::vec2 kCheatModeLabelPosition = {0.0f, -300.0f};
+constexpr float kCheatModeLabelDuration = 1.5f;
 }
 
 // 建構子 / 初始化
@@ -27,6 +32,16 @@ GameScene::GameScene() {
     );
     m_GameCompleteBanner->m_Transform.translation = kCompleteBannerCenter;
     m_GameCompleteBanner->m_Transform.scale = {kCompleteBannerScale, kCompleteBannerScale};
+
+    m_CheatModeLabel = std::make_shared<Util::Text>(
+        kFont,
+        20,
+        "Cheat mode OFF",
+        Util::Color::FromRGB(150, 150, 150)
+    );
+    m_CheatModeLabelObject = std::make_shared<Util::GameObject>(m_CheatModeLabel, 100.0f);
+    m_CheatModeLabelObject->m_Transform.translation = kCheatModeLabelPosition;
+
     RefreshCurrentLevelBindings();
 
     AudioManager::GetInstance().PlayGameBgm();
@@ -62,10 +77,10 @@ void GameScene::Update() {
         return;
     }
 
-    // 暫停輸入
-    if (Util::Input::IsKeyDown(Util::Keycode::P)) {
-        m_ShouldPause = true;
-        return;
+    HandleCheatInput();
+    if (m_CheatModeLabelTimer > 0.0f) {
+        const float dt = std::min(Util::Time::GetDeltaTimeMs() / 1000.0f, 0.05f);
+        m_CheatModeLabelTimer = std::max(0.0f, m_CheatModeLabelTimer - dt);
     }
 
     const bool wasDead = m_Player->IsDead();
@@ -91,10 +106,22 @@ void GameScene::Draw() {
         m_GameCompleteBanner->Draw();
     } else {
         m_Player->Draw();
+        if (m_CheatModeLabelTimer > 0.0f) {
+            m_CheatModeLabelObject->Draw();
+        }
     }
 }
 
 // 子步驟
+void GameScene::HandleCheatInput() {
+    if (Util::Input::IsKeyDown(Util::Keycode::C)) {
+        m_IsInvincibleCheatEnabled = !m_IsInvincibleCheatEnabled;
+        m_CheatModeLabelTimer = kCheatModeLabelDuration;
+        UpdateCheatModeLabel();
+        LOG_INFO("Invincible cheat {}", m_IsInvincibleCheatEnabled ? "enabled" : "disabled");
+    }
+}
+
 void GameScene::RefreshCurrentLevelBindings() {
     const auto& level = m_LevelManager->GetCurrentLevel();
     m_Platforms = level->GetPlatforms();
@@ -167,6 +194,9 @@ void GameScene::HandleHazards() {
     for (const auto& hazard : m_LevelManager->GetCurrentLevel()->GetHazards()) {
         hazard->Update();
         if (hazard->is_touched(m_Player->GetPosition())) {
+            if (m_IsInvincibleCheatEnabled) {
+                continue;
+            }
             m_Player->Die();
         }
     }
@@ -197,4 +227,15 @@ void GameScene::TriggerGameComplete() {
     m_GameCompleteBanner->m_Transform.scale = {kCompleteBannerScale, kCompleteBannerScale};
     AudioManager::GetInstance().PauseGameBgm();
     AudioManager::GetInstance().PlayGameComplete();
+}
+
+void GameScene::UpdateCheatModeLabel() {
+    if (m_IsInvincibleCheatEnabled) {
+        m_CheatModeLabel->SetText("Cheat mode ON");
+        m_CheatModeLabel->SetColor(Util::Color::FromRGB(120, 220, 120));
+        return;
+    }
+
+    m_CheatModeLabel->SetText("Cheat mode OFF");
+    m_CheatModeLabel->SetColor(Util::Color::FromRGB(150, 150, 150));
 }

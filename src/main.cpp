@@ -13,7 +13,6 @@ int main(int, char**) {
                 break;
 
             case App::State::UPDATE:
-            case App::State::PAUSE:  // PAUSE 由 App::Update 內部處理
                 app.Update();
                 break;
 

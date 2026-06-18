@@ -10,7 +10,6 @@ public:
     enum class State {
         START,
         UPDATE,
-        PAUSE,
         END,
     };
 

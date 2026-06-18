@@ -21,16 +21,8 @@ void App::Update() {
             m_CurrentScene->Draw();
             if (m_CurrentScene->ShouldQuit())
                 m_CurrentState = State::END;
-            else if (m_CurrentScene->ShouldPause())
-                m_CurrentState = State::PAUSE; // Phase 4 預留
             else if (const auto nextScene = m_CurrentScene->GetNextScene())
                 ChangeScene(*nextScene);
-            break;
-
-        case State::PAUSE:
-            // Phase 4：PauseScene 在此處理
-            // 暫時按 P 繼續
-            m_CurrentState = State::UPDATE;
             break;
 
         case State::START:
@@ -62,9 +54,6 @@ std::shared_ptr<Scene> App::CreateScene(SceneType sceneType) {
             return std::make_shared<MenuScene>();
         case SceneType::Game:
             return std::make_shared<GameScene>();
-        case SceneType::Pause:
-            LOG_ERROR("Requested scene is not implemented yet");
-            return nullptr;
     }
 
     return nullptr;

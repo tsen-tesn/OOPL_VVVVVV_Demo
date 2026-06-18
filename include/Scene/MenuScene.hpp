@@ -16,7 +16,6 @@ public:
     void Draw() override;
 
     bool ShouldQuit() const override { return m_ShouldQuit; }
-    bool ShouldPause() const override { return false; }
     std::optional<SceneType> GetNextScene() const override { return m_NextScene; }
 
 private:
