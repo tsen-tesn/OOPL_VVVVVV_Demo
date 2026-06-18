@@ -33,14 +33,27 @@ GameScene::GameScene() {
     m_GameCompleteBanner->m_Transform.translation = kCompleteBannerCenter;
     m_GameCompleteBanner->m_Transform.scale = {kCompleteBannerScale, kCompleteBannerScale};
 
-    m_CheatModeLabel = std::make_shared<Util::Text>(
-        kFont,
-        20,
-        "Cheat mode OFF",
-        Util::Color::FromRGB(150, 150, 150)
+    m_CheatModeOnLabelObject = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Text>(
+            kFont,
+            20,
+            "Cheat mode ON",
+            Util::Color::FromRGB(120, 220, 120)
+        ),
+        100.0f
     );
-    m_CheatModeLabelObject = std::make_shared<Util::GameObject>(m_CheatModeLabel, 100.0f);
-    m_CheatModeLabelObject->m_Transform.translation = kCheatModeLabelPosition;
+    m_CheatModeOnLabelObject->m_Transform.translation = kCheatModeLabelPosition;
+
+    m_CheatModeOffLabelObject = std::make_shared<Util::GameObject>(
+        std::make_shared<Util::Text>(
+            kFont,
+            20,
+            "Cheat mode OFF",
+            Util::Color::FromRGB(150, 150, 150)
+        ),
+        100.0f
+    );
+    m_CheatModeOffLabelObject->m_Transform.translation = kCheatModeLabelPosition;
 
     RefreshCurrentLevelBindings();
 
@@ -107,7 +120,11 @@ void GameScene::Draw() {
     } else {
         m_Player->Draw();
         if (m_CheatModeLabelTimer > 0.0f) {
-            m_CheatModeLabelObject->Draw();
+            if (m_IsInvincibleCheatEnabled) {
+                m_CheatModeOnLabelObject->Draw();
+            } else {
+                m_CheatModeOffLabelObject->Draw();
+            }
         }
     }
 }
@@ -117,7 +134,6 @@ void GameScene::HandleCheatInput() {
     if (Util::Input::IsKeyDown(Util::Keycode::C)) {
         m_IsInvincibleCheatEnabled = !m_IsInvincibleCheatEnabled;
         m_CheatModeLabelTimer = kCheatModeLabelDuration;
-        UpdateCheatModeLabel();
         LOG_INFO("Invincible cheat {}", m_IsInvincibleCheatEnabled ? "enabled" : "disabled");
     }
 }
@@ -227,15 +243,4 @@ void GameScene::TriggerGameComplete() {
     m_GameCompleteBanner->m_Transform.scale = {kCompleteBannerScale, kCompleteBannerScale};
     AudioManager::GetInstance().PauseGameBgm();
     AudioManager::GetInstance().PlayGameComplete();
-}
-
-void GameScene::UpdateCheatModeLabel() {
-    if (m_IsInvincibleCheatEnabled) {
-        m_CheatModeLabel->SetText("Cheat mode ON");
-        m_CheatModeLabel->SetColor(Util::Color::FromRGB(120, 220, 120));
-        return;
-    }
-
-    m_CheatModeLabel->SetText("Cheat mode OFF");
-    m_CheatModeLabel->SetColor(Util::Color::FromRGB(150, 150, 150));
 }

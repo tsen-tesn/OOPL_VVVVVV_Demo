@@ -12,10 +12,6 @@
 #include "DisappearingPlatformGroup.hpp"
 #include "Util/GameObject.hpp"
 
-namespace Util {
-class Text;
-}
-
 class GameScene : public Scene {
 public:
     GameScene();
@@ -37,15 +33,14 @@ private:
     void HandleHazards();
     void HandleRoomTransition();
     void TriggerGameComplete();
-    void UpdateCheatModeLabel();
 
 private:
     std::shared_ptr<Player>   m_Player;
     std::unique_ptr<LevelManager> m_LevelManager;
     std::vector<std::shared_ptr<Platform>> m_Platforms;
     std::shared_ptr<Util::GameObject> m_GameCompleteBanner;
-    std::shared_ptr<Util::GameObject> m_CheatModeLabelObject;
-    std::shared_ptr<Util::Text> m_CheatModeLabel;
+    std::shared_ptr<Util::GameObject> m_CheatModeOnLabelObject;
+    std::shared_ptr<Util::GameObject> m_CheatModeOffLabelObject;
 
     bool m_ShouldQuit  = false;
     bool m_IsInvincibleCheatEnabled = false;
