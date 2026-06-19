@@ -1,8 +1,3 @@
----
-title: 2026 OOPL Final Report
-
----
-
 # 2026 OOPL Final Report
 
 ## 組別資訊
@@ -12,7 +7,7 @@ title: 2026 OOPL Final Report
 復刻遊戲：VVVVVV Demo
 
 ## 專案簡介
-
+遊戲介紹：https://youtu.be/ZoTDuCty7jQ
 
 ### 遊戲簡介
 VVVVVV Demo 是經典 2D 復古平台益智遊戲的免費體驗版。玩家扮演船長 Viridian，無法跳躍，只能透過「翻轉重力」來操控角色在天花板與地面間穿梭，挑戰快速、高難度且極簡的關卡設計。
