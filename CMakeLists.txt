@@ -46,6 +46,8 @@ add_executable(${PROJECT_NAME}
     ${HEADER_FILES}
 )
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE GLEW_NO_GLU)
+
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /W4)
 else()
